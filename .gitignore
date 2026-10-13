@@ -1,0 +1,32 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Runtime state and real (private) documents
+data/lovelight.db
+data/cache/
+data/incoming/
+
+# Video build output and deps
+video/node_modules/
+video/out/
+
+.DS_Store
+
+# Tool caches
+.pytest_cache/
+.ruff_cache/
+*.db
+*.sqlite3

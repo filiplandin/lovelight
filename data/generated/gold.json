@@ -1,0 +1,602 @@
+{
+  "kvitto_sl_30dagar_sep.pdf": {
+    "extraction": {
+      "doc_type": "receipt",
+      "vendor": "SL (Storstockholms Lokaltrafik)",
+      "vendor_org_nr": "556013-0683",
+      "invoice_number": null,
+      "date": "2026-09-01",
+      "due_date": null,
+      "currency": "SEK",
+      "net": "1000.00",
+      "vat_rate": "0.06",
+      "vat": "60.00",
+      "gross": "1060.00",
+      "bankgiro": null,
+      "iban": null,
+      "ocr_reference": null,
+      "suggested_account": "5810",
+      "description": "SL 30-dagarsbiljett, vuxen",
+      "confidence": 0.97,
+      "injection_suspected": false
+    },
+    "expected_bank_tx_ids": [
+      "BT001"
+    ],
+    "anomalies": []
+  },
+  "kvitto_sl_30dagar_okt.pdf": {
+    "extraction": {
+      "doc_type": "receipt",
+      "vendor": "SL (Storstockholms Lokaltrafik)",
+      "vendor_org_nr": "556013-0683",
+      "invoice_number": null,
+      "date": "2026-10-01",
+      "due_date": null,
+      "currency": "SEK",
+      "net": "848.00",
+      "vat_rate": "0.25",
+      "vat": "212.00",
+      "gross": "1060.00",
+      "bankgiro": null,
+      "iban": null,
+      "ocr_reference": null,
+      "suggested_account": "5810",
+      "description": "SL 30-dagarsbiljett, vuxen",
+      "confidence": 0.97,
+      "injection_suspected": false
+    },
+    "expected_bank_tx_ids": [
+      "BT022"
+    ],
+    "anomalies": [
+      "vat_mismatch"
+    ]
+  },
+  "kvitto_taxi_stockholm_0917.pdf": {
+    "extraction": {
+      "doc_type": "receipt",
+      "vendor": "Taxi Stockholm 15 00 00",
+      "vendor_org_nr": "556196-8836",
+      "invoice_number": null,
+      "date": "2026-09-17",
+      "due_date": null,
+      "currency": "SEK",
+      "net": "388.68",
+      "vat_rate": "0.06",
+      "vat": "23.32",
+      "gross": "412.00",
+      "bankgiro": null,
+      "iban": null,
+      "ocr_reference": null,
+      "suggested_account": "5800",
+      "description": "Taxi Södermalm - Arlanda kundmöte",
+      "confidence": 0.97,
+      "injection_suspected": false
+    },
+    "expected_bank_tx_ids": [
+      "BT009"
+    ],
+    "anomalies": []
+  },
+  "IMG_4471.png": {
+    "extraction": {
+      "doc_type": "receipt",
+      "vendor": "Restaurang Pelikan",
+      "vendor_org_nr": "556234-1187",
+      "invoice_number": null,
+      "date": "2026-09-23",
+      "due_date": null,
+      "currency": "SEK",
+      "net": "1200.00",
+      "vat_rate": "0.12",
+      "vat": "144.00",
+      "gross": "1344.00",
+      "bankgiro": null,
+      "iban": null,
+      "ocr_reference": null,
+      "suggested_account": "6071",
+      "description": "Kundlunch 4 pers, projekt Nordic Rail",
+      "confidence": 0.9,
+      "injection_suspected": false
+    },
+    "expected_bank_tx_ids": [
+      "BT011"
+    ],
+    "anomalies": []
+  },
+  "IMG_4502.png": {
+    "extraction": {
+      "doc_type": "receipt",
+      "vendor": "Clas Ohlson",
+      "vendor_org_nr": "556035-8672",
+      "invoice_number": null,
+      "date": "2026-09-29",
+      "due_date": null,
+      "currency": "SEK",
+      "net": "399.20",
+      "vat_rate": "0.25",
+      "vat": "99.80",
+      "gross": "499.00",
+      "bankgiro": null,
+      "iban": null,
+      "ocr_reference": null,
+      "suggested_account": "5410",
+      "description": "Förlängningskablar och HDMI-adapter",
+      "confidence": 0.9,
+      "injection_suspected": false
+    },
+    "expected_bank_tx_ids": [
+      "BT019"
+    ],
+    "anomalies": []
+  },
+  "IMG_4538.png": {
+    "extraction": {
+      "doc_type": "receipt",
+      "vendor": "Espresso House",
+      "vendor_org_nr": "556524-1563",
+      "invoice_number": null,
+      "date": "2026-10-06",
+      "due_date": null,
+      "currency": "SEK",
+      "net": "256.25",
+      "vat_rate": "0.12",
+      "vat": "30.75",
+      "gross": "287.00",
+      "bankgiro": null,
+      "iban": null,
+      "ocr_reference": null,
+      "suggested_account": "6071",
+      "description": "Fika workshop med kund",
+      "confidence": 0.9,
+      "injection_suspected": false
+    },
+    "expected_bank_tx_ids": [
+      "BT027"
+    ],
+    "anomalies": []
+  },
+  "adobe_invoice_IE52011893.pdf": {
+    "extraction": {
+      "doc_type": "receipt",
+      "vendor": "Adobe Systems Software Ireland Ltd",
+      "vendor_org_nr": null,
+      "invoice_number": null,
+      "date": "2026-09-14",
+      "due_date": null,
+      "currency": "USD",
+      "net": "89.99",
+      "vat_rate": "0",
+      "vat": "0.00",
+      "gross": "89.99",
+      "bankgiro": null,
+      "iban": null,
+      "ocr_reference": null,
+      "suggested_account": "5420",
+      "description": "Creative Cloud for teams, 1 licens (omvänd skattskyldighet)",
+      "confidence": 0.97,
+      "injection_suspected": false
+    },
+    "expected_bank_tx_ids": [
+      "BT006"
+    ],
+    "anomalies": []
+  },
+  "figma_receipt_2026-10.pdf": {
+    "extraction": {
+      "doc_type": "receipt",
+      "vendor": "Figma, Inc.",
+      "vendor_org_nr": null,
+      "invoice_number": null,
+      "date": "2026-10-02",
+      "due_date": null,
+      "currency": "EUR",
+      "net": "180.00",
+      "vat_rate": "0",
+      "vat": "0.00",
+      "gross": "180.00",
+      "bankgiro": null,
+      "iban": null,
+      "ocr_reference": null,
+      "suggested_account": "5420",
+      "description": "Figma Professional, 12 editors (omvänd skattskyldighet)",
+      "confidence": 0.97,
+      "injection_suspected": false
+    },
+    "expected_bank_tx_ids": [
+      "BT021"
+    ],
+    "anomalies": []
+  },
+  "sj_biljett_STO-GBG_1008.pdf": {
+    "extraction": {
+      "doc_type": "receipt",
+      "vendor": "SJ AB",
+      "vendor_org_nr": "556196-1599",
+      "invoice_number": null,
+      "date": "2026-10-08",
+      "due_date": null,
+      "currency": "SEK",
+      "net": "1221.70",
+      "vat_rate": "0.06",
+      "vat": "73.30",
+      "gross": "1295.00",
+      "bankgiro": null,
+      "iban": null,
+      "ocr_reference": null,
+      "suggested_account": "5810",
+      "description": "Tåg Stockholm C - Göteborg C t/r, kundpresentation",
+      "confidence": 0.97,
+      "injection_suspected": false
+    },
+    "expected_bank_tx_ids": [
+      "BT029"
+    ],
+    "anomalies": []
+  },
+  "kvitto_kjell_0911.pdf": {
+    "extraction": {
+      "doc_type": "receipt",
+      "vendor": "Kjell & Company",
+      "vendor_org_nr": "556552-2786",
+      "invoice_number": null,
+      "date": "2026-09-11",
+      "due_date": null,
+      "currency": "SEK",
+      "net": "279.20",
+      "vat_rate": "0.25",
+      "vat": "69.80",
+      "gross": "349.00",
+      "bankgiro": null,
+      "iban": null,
+      "ocr_reference": null,
+      "suggested_account": "5410",
+      "description": "USB-C hubb till konferensrum",
+      "confidence": 0.97,
+      "injection_suspected": false
+    },
+    "expected_bank_tx_ids": [
+      "BT004"
+    ],
+    "anomalies": []
+  },
+  "kvitto_easypark_1002.pdf": {
+    "extraction": {
+      "doc_type": "receipt",
+      "vendor": "EasyPark AB",
+      "vendor_org_nr": "556672-6046",
+      "invoice_number": null,
+      "date": "2026-10-02",
+      "due_date": null,
+      "currency": "SEK",
+      "net": "96.00",
+      "vat_rate": "0.25",
+      "vat": "24.00",
+      "gross": "120.00",
+      "bankgiro": null,
+      "iban": null,
+      "ocr_reference": null,
+      "suggested_account": "5800",
+      "description": "Parkering vid kundbesök Solna",
+      "confidence": 0.97,
+      "injection_suspected": false
+    },
+    "expected_bank_tx_ids": [
+      "BT024"
+    ],
+    "anomalies": []
+  },
+  "uber_receipt_0915.eml": {
+    "extraction": {
+      "doc_type": "receipt",
+      "vendor": "Uber B.V.",
+      "vendor_org_nr": null,
+      "invoice_number": null,
+      "date": "2026-09-15",
+      "due_date": null,
+      "currency": "SEK",
+      "net": "272.64",
+      "vat_rate": "0.06",
+      "vat": "16.36",
+      "gross": "289.00",
+      "bankgiro": null,
+      "iban": null,
+      "ocr_reference": null,
+      "suggested_account": "5800",
+      "description": "Taxiresa Hornsgatan 54 → Sveavägen 44",
+      "confidence": 0.95,
+      "injection_suspected": false
+    },
+    "expected_bank_tx_ids": [
+      "BT007"
+    ],
+    "anomalies": []
+  },
+  "bolt_receipt_0926.eml": {
+    "extraction": {
+      "doc_type": "receipt",
+      "vendor": "Bolt Operations OÜ",
+      "vendor_org_nr": null,
+      "invoice_number": null,
+      "date": "2026-09-26",
+      "due_date": null,
+      "currency": "SEK",
+      "net": "167.92",
+      "vat_rate": "0.06",
+      "vat": "10.08",
+      "gross": "178.00",
+      "bankgiro": null,
+      "iban": null,
+      "ocr_reference": null,
+      "suggested_account": "5800",
+      "description": "Taxiresa Slussen → Hornsgatan 54",
+      "confidence": 0.95,
+      "injection_suspected": false
+    },
+    "expected_bank_tx_ids": [
+      "BT013"
+    ],
+    "anomalies": []
+  },
+  "uber_receipt_1009.eml": {
+    "extraction": {
+      "doc_type": "receipt",
+      "vendor": "Uber B.V.",
+      "vendor_org_nr": null,
+      "invoice_number": null,
+      "date": "2026-10-09",
+      "due_date": null,
+      "currency": "SEK",
+      "net": "321.70",
+      "vat_rate": "0.06",
+      "vat": "19.30",
+      "gross": "341.00",
+      "bankgiro": null,
+      "iban": null,
+      "ocr_reference": null,
+      "suggested_account": "5800",
+      "description": "Taxiresa Stockholm C → Hammarby Sjöstad",
+      "confidence": 0.95,
+      "injection_suspected": false
+    },
+    "expected_bank_tx_ids": [
+      "BT031"
+    ],
+    "anomalies": []
+  },
+  "faktura_ringvagen_hyra_sep.pdf": {
+    "extraction": {
+      "doc_type": "supplier_invoice",
+      "vendor": "Fastighets AB Ringvägen",
+      "vendor_org_nr": "556788-1290",
+      "invoice_number": "H-2026-0917",
+      "date": "2026-08-25",
+      "due_date": "2026-09-30",
+      "currency": "SEK",
+      "net": "45000.00",
+      "vat_rate": "0.25",
+      "vat": "11250.00",
+      "gross": "56250.00",
+      "bankgiro": "5050-1055",
+      "iban": null,
+      "ocr_reference": "9039103982",
+      "suggested_account": "5010",
+      "description": "Lokalhyra september 2026",
+      "confidence": 0.98,
+      "injection_suspected": false
+    },
+    "expected_bank_tx_ids": [
+      "BT016"
+    ],
+    "anomalies": []
+  },
+  "faktura_ringvagen_hyra_okt.pdf": {
+    "extraction": {
+      "doc_type": "supplier_invoice",
+      "vendor": "Fastighets AB Ringvägen",
+      "vendor_org_nr": "556788-1290",
+      "invoice_number": "H-2026-1017",
+      "date": "2026-09-25",
+      "due_date": "2026-10-31",
+      "currency": "SEK",
+      "net": "45000.00",
+      "vat_rate": "0.25",
+      "vat": "11250.00",
+      "gross": "56250.00",
+      "bankgiro": "5916-4482",
+      "iban": null,
+      "ocr_reference": "1392377204",
+      "suggested_account": "5010",
+      "description": "Lokalhyra oktober 2026",
+      "confidence": 0.98,
+      "injection_suspected": false
+    },
+    "expected_bank_tx_ids": [],
+    "anomalies": [
+      "iban_change"
+    ]
+  },
+  "telia_faktura_88213456.pdf": {
+    "extraction": {
+      "doc_type": "supplier_invoice",
+      "vendor": "Telia Sverige AB",
+      "vendor_org_nr": "556430-0142",
+      "invoice_number": "88213456",
+      "date": "2026-09-05",
+      "due_date": "2026-09-30",
+      "currency": "SEK",
+      "net": "3992.00",
+      "vat_rate": "0.25",
+      "vat": "998.00",
+      "gross": "4990.00",
+      "bankgiro": "5287-4401",
+      "iban": null,
+      "ocr_reference": "2329956656",
+      "suggested_account": "6212",
+      "description": "Mobil och bredband september",
+      "confidence": 0.98,
+      "injection_suspected": false
+    },
+    "expected_bank_tx_ids": [
+      "BT014"
+    ],
+    "anomalies": []
+  },
+  "faktura_nordstrom_illustration_2026-14.pdf": {
+    "extraction": {
+      "doc_type": "supplier_invoice",
+      "vendor": "Nordström Illustration",
+      "vendor_org_nr": "850312-4471",
+      "invoice_number": "2026-14",
+      "date": "2026-09-10",
+      "due_date": "2026-10-10",
+      "currency": "SEK",
+      "net": "28000.00",
+      "vat_rate": "0.25",
+      "vat": "7000.00",
+      "gross": "35000.00",
+      "bankgiro": "5432-1098",
+      "iban": null,
+      "ocr_reference": "7987767634",
+      "suggested_account": "6550",
+      "description": "Underkonsult illustration",
+      "confidence": 0.98,
+      "injection_suspected": false
+    },
+    "expected_bank_tx_ids": [
+      "BT028"
+    ],
+    "anomalies": []
+  },
+  "fortnox_faktura_4471.pdf": {
+    "extraction": {
+      "doc_type": "supplier_invoice",
+      "vendor": "Fortnox AB",
+      "vendor_org_nr": "556469-6291",
+      "invoice_number": "FNX-2026-4471",
+      "date": "2026-09-01",
+      "due_date": "2026-09-30",
+      "currency": "SEK",
+      "net": "1499.00",
+      "vat_rate": "0.25",
+      "vat": "374.75",
+      "gross": "1873.75",
+      "bankgiro": "5323-4505",
+      "iban": null,
+      "ocr_reference": "4026319071",
+      "suggested_account": "5420",
+      "description": "Bokföringsprogram september",
+      "confidence": 0.98,
+      "injection_suspected": false
+    },
+    "expected_bank_tx_ids": [
+      "BT014"
+    ],
+    "anomalies": []
+  },
+  "ljungbergs_faktura_30412.pdf": {
+    "extraction": {
+      "doc_type": "supplier_invoice",
+      "vendor": "Ljungbergs Tryckeri AB",
+      "vendor_org_nr": "556123-9874",
+      "invoice_number": "30412",
+      "date": "2026-09-12",
+      "due_date": "2026-10-12",
+      "currency": "SEK",
+      "net": "12400.00",
+      "vat_rate": "0.25",
+      "vat": "3100.00",
+      "gross": "15500.00",
+      "bankgiro": "5791-2236",
+      "iban": null,
+      "ocr_reference": "1787280609",
+      "suggested_account": "4010",
+      "description": "Tryck kundprojekt Nordic Rail",
+      "confidence": 0.98,
+      "injection_suspected": false
+    },
+    "expected_bank_tx_ids": [
+      "BT033"
+    ],
+    "anomalies": []
+  },
+  "ljungbergs_faktura_30519.pdf": {
+    "extraction": {
+      "doc_type": "supplier_invoice",
+      "vendor": "Ljungbergs Tryckeri AB",
+      "vendor_org_nr": "556123-9874",
+      "invoice_number": "30519",
+      "date": "2026-10-05",
+      "due_date": "2026-11-04",
+      "currency": "SEK",
+      "net": "12400.00",
+      "vat_rate": "0.25",
+      "vat": "3100.00",
+      "gross": "15500.00",
+      "bankgiro": "5791-2236",
+      "iban": null,
+      "ocr_reference": "6353307140",
+      "suggested_account": "4010",
+      "description": "Tryck kundprojekt Nordic Rail",
+      "confidence": 0.98,
+      "injection_suspected": false
+    },
+    "expected_bank_tx_ids": [],
+    "anomalies": [
+      "duplicate"
+    ]
+  },
+  "faktura_stadbolaget_kvist_1042.pdf": {
+    "extraction": {
+      "doc_type": "supplier_invoice",
+      "vendor": "Städbolaget Kvist AB",
+      "vendor_org_nr": "559012-3345",
+      "invoice_number": "1042",
+      "date": "2026-09-03",
+      "due_date": "2026-09-30",
+      "currency": "SEK",
+      "net": "3200.00",
+      "vat_rate": "0.25",
+      "vat": "800.00",
+      "gross": "4000.00",
+      "bankgiro": "5121-8870",
+      "iban": null,
+      "ocr_reference": "0342872850",
+      "suggested_account": "5060",
+      "description": "Städning september",
+      "confidence": 0.98,
+      "injection_suspected": false
+    },
+    "expected_bank_tx_ids": [
+      "BT014"
+    ],
+    "anomalies": []
+  },
+  "faktura_nordic_growth_partners_7781.pdf": {
+    "extraction": {
+      "doc_type": "supplier_invoice",
+      "vendor": "Nordic Growth Partners AB",
+      "vendor_org_nr": "559301-7712",
+      "invoice_number": "7781",
+      "date": "2026-10-08",
+      "due_date": "2026-10-18",
+      "currency": "SEK",
+      "net": "7000.00",
+      "vat_rate": "0.25",
+      "vat": "1750.00",
+      "gross": "8750.00",
+      "bankgiro": "5933-1120",
+      "iban": null,
+      "ocr_reference": "6218890736",
+      "suggested_account": "6550",
+      "description": "Konsulttjänster strategi",
+      "confidence": 0.98,
+      "injection_suspected": true
+    },
+    "expected_bank_tx_ids": [],
+    "anomalies": [
+      "injection"
+    ]
+  }
+}

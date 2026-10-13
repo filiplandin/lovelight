@@ -1,0 +1,64 @@
+# Lovelight — AI bookkeeping inbox on top of Light
+
+Paste below Light's default prompt. Light API key is provided separately as a secret.
+
+## What we're building
+Light is the ledger. We build the AI layer that makes it fill itself: the "shoebox → books" workflow accountants at bureaus serving Fortnox/Visma SMEs hate today (one-by-one receipt upload, manual bank matching, no trust in AI black boxes).
+
+Tagline: **"AI proposes, code disposes, accountant approves."**
+Goal: feel magical in a 3-min live pitch. Polished, dark, finance-grade UI.
+
+## Core flow (build in this order, each step demoable)
+1. **Trust Center scan of live Light data (build first — instant wow)**
+   - GET invoice-receivables from the Light sandbox; run deterministic checks in the edge function:
+     duplicate (same customer+amount+near date / reused number), FX/currency oddities, quantity/amount outliers, impossible dates (epoch/year typos), missing fields.
+   - The sandbox already contains planted cases (INV-DUP-*, INV-FX-JPY-*, INV-QTY-*, INV-EPOCH-*, INV-YEAR-*).
+   - Each flag: severity chip (red/amber), rule that fired, 1-sentence AI explanation, link to invoice.
+2. **Batch ingest**
+   - Drag-drop many PDFs/images at once (the anti-Visma moment) → each card animates `received → extracted → matched → posted`.
+   - Extraction via LLM in an edge function, structured JSON only: vendor, org.nr, date, invoice no., currency, net, VAT rate, VAT amount, gross, bankgiro/IBAN, suggested BAS account, confidence.
+   - Validate in code: net+VAT=gross, VAT rate ∈ {25,12,6,0}, required fields present. Fail → "needs review".
+   - Supplier invoices → create Light invoice-payable + upload document. Receipts → Light expense (or attachment).
+3. **Bank matching**
+   - GET Light bank transactions (UNMATCHED) → match to ingested docs by amount (±1 SEK), date window (±7d), fuzzy vendor name ("SL ACCESS" ≈ "Storstockholms Lokaltrafik"), reference/OCR. Support 1 payment ↔ N invoices.
+   - Two-column view with connecting lines + confidence. ≥0.95 auto-propose, else approval queue (one-click + bulk approve).
+   - Approve → mark-as-paid in Light (only on explicit user click).
+4. **Security panel (part of Trust Center)**
+   - Prompt-injection detection: documents/emails containing instructions ("ignore previous…", "post to account…") are quarantined, attack text highlighted, never executed.
+   - Changed bankgiro/IBAN vs previous invoices from same supplier → red flag (invoice fraud).
+   - Bank payment without receipt → flag.
+   - Audit trail per item: source file hash, model, prompt version, who approved, timestamp.
+5. **Stretch:** email inbox ingestion (forward-to address), books summary (P&L / VAT boxes from ledger lines), SIE4 export, bureau overview grid of ~20 mocked clients.
+
+## Screens
+0. Bureau overview (mocked client grid; "Lovelight Design AB" is the live client) — stretch
+1. Live inbox (hero): animated doc cards, "hours saved" counter
+2. Reconciliation: bank ↔ docs
+3. Trust Center: anomalies + quarantine + audit trail
+
+## Rules
+- All Light + LLM calls server-side in edge functions; no secrets in the browser.
+- LLM gets no tools, returns schema-validated JSON only. All money math and checks are deterministic code.
+- Writes to Light only on explicit user action; use `X-Idempotency-Key`. Never call open/archive/reset.
+- Light sandbox base: `https://api.sandbox.light.inc/rest/ext/v1` (docs index: https://light.inc/docs/llms.txt — verify path mapping for bank-accounts, invoice-payables, expenses, attachments, ledger-transaction-lines).
+- Ledger is append-only in spirit: corrections = reversals, not edits.
+
+## Done criteria
+- Trust Center flags all planted sandbox anomalies with no false-red on clean invoices.
+- Batch of ≥10 docs ingests with visible per-card progress; totals validate.
+- ≥1 bank transaction matched and marked paid in Light from the UI.
+- One injection doc visibly quarantined.
+- Demo runs end-to-end in <3 min with no page reloads.
+
+## Out of scope (say "roadmap" in pitch)
+Period close, accruals, full VAT return, live open-banking feed (Tink), multi-currency revaluation.
+
+---
+## Suggested skills (if continued in Claude Code)
+- `grill-me` — remaining open questions: email ingestion path, demo video (OBS/Remotion) script.
+- `artifact-design` / `prototype` — UI polish variants.
+- `tdd` — matching + anomaly rules if ported to a tested Python core.
+
+## timeline:
+Must be done at 17 so iterate quickly and use full effort and spawn agents working independently.
+

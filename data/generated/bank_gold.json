@@ -1,0 +1,276 @@
+{
+  "BT001": {
+    "document_files": [
+      "kvitto_sl_30dagar_sep.pdf"
+    ],
+    "customer_invoice_numbers": [],
+    "anomalies": [],
+    "no_doc_expected": false
+  },
+  "BT002": {
+    "document_files": [],
+    "customer_invoice_numbers": [
+      "INVOICE#00068"
+    ],
+    "anomalies": [],
+    "no_doc_expected": false
+  },
+  "BT003": {
+    "document_files": [],
+    "customer_invoice_numbers": [],
+    "anomalies": [],
+    "no_doc_expected": true
+  },
+  "BT004": {
+    "document_files": [
+      "kvitto_kjell_0911.pdf"
+    ],
+    "customer_invoice_numbers": [],
+    "anomalies": [],
+    "no_doc_expected": false
+  },
+  "BT005": {
+    "document_files": [],
+    "customer_invoice_numbers": [
+      "INVOICE#00057"
+    ],
+    "anomalies": [],
+    "no_doc_expected": false
+  },
+  "BT006": {
+    "document_files": [
+      "adobe_invoice_IE52011893.pdf"
+    ],
+    "customer_invoice_numbers": [],
+    "anomalies": [],
+    "no_doc_expected": false
+  },
+  "BT007": {
+    "document_files": [
+      "uber_receipt_0915.eml"
+    ],
+    "customer_invoice_numbers": [],
+    "anomalies": [],
+    "no_doc_expected": false
+  },
+  "BT008": {
+    "document_files": [],
+    "customer_invoice_numbers": [],
+    "anomalies": [],
+    "no_doc_expected": true
+  },
+  "BT009": {
+    "document_files": [
+      "kvitto_taxi_stockholm_0917.pdf"
+    ],
+    "customer_invoice_numbers": [],
+    "anomalies": [],
+    "no_doc_expected": false
+  },
+  "BT010": {
+    "document_files": [],
+    "customer_invoice_numbers": [
+      "INVOICE#00058"
+    ],
+    "anomalies": [],
+    "no_doc_expected": false
+  },
+  "BT011": {
+    "document_files": [
+      "IMG_4471.png"
+    ],
+    "customer_invoice_numbers": [],
+    "anomalies": [],
+    "no_doc_expected": false
+  },
+  "BT012": {
+    "document_files": [],
+    "customer_invoice_numbers": [],
+    "anomalies": [],
+    "no_doc_expected": true
+  },
+  "BT013": {
+    "document_files": [
+      "bolt_receipt_0926.eml"
+    ],
+    "customer_invoice_numbers": [],
+    "anomalies": [],
+    "no_doc_expected": false
+  },
+  "BT014": {
+    "document_files": [
+      "telia_faktura_88213456.pdf",
+      "fortnox_faktura_4471.pdf",
+      "faktura_stadbolaget_kvist_1042.pdf"
+    ],
+    "customer_invoice_numbers": [],
+    "anomalies": [],
+    "no_doc_expected": false
+  },
+  "BT015": {
+    "document_files": [],
+    "customer_invoice_numbers": [
+      "INVOICE#00069"
+    ],
+    "anomalies": [],
+    "no_doc_expected": false
+  },
+  "BT016": {
+    "document_files": [
+      "faktura_ringvagen_hyra_sep.pdf"
+    ],
+    "customer_invoice_numbers": [],
+    "anomalies": [],
+    "no_doc_expected": false
+  },
+  "BT017": {
+    "document_files": [],
+    "customer_invoice_numbers": [],
+    "anomalies": [],
+    "no_doc_expected": true
+  },
+  "BT018": {
+    "document_files": [],
+    "customer_invoice_numbers": [],
+    "anomalies": [],
+    "no_doc_expected": true
+  },
+  "BT019": {
+    "document_files": [
+      "IMG_4502.png"
+    ],
+    "customer_invoice_numbers": [],
+    "anomalies": [],
+    "no_doc_expected": false
+  },
+  "BT020": {
+    "document_files": [],
+    "customer_invoice_numbers": [],
+    "anomalies": [],
+    "no_doc_expected": true
+  },
+  "BT021": {
+    "document_files": [
+      "figma_receipt_2026-10.pdf"
+    ],
+    "customer_invoice_numbers": [],
+    "anomalies": [],
+    "no_doc_expected": false
+  },
+  "BT022": {
+    "document_files": [
+      "kvitto_sl_30dagar_okt.pdf"
+    ],
+    "customer_invoice_numbers": [],
+    "anomalies": [],
+    "no_doc_expected": false
+  },
+  "BT023": {
+    "document_files": [],
+    "customer_invoice_numbers": [],
+    "anomalies": [
+      "missing_receipt"
+    ],
+    "no_doc_expected": false
+  },
+  "BT024": {
+    "document_files": [
+      "kvitto_easypark_1002.pdf"
+    ],
+    "customer_invoice_numbers": [],
+    "anomalies": [],
+    "no_doc_expected": false
+  },
+  "BT025": {
+    "document_files": [],
+    "customer_invoice_numbers": [],
+    "anomalies": [],
+    "no_doc_expected": true
+  },
+  "BT026": {
+    "document_files": [],
+    "customer_invoice_numbers": [
+      "INVOICE#00084"
+    ],
+    "anomalies": [],
+    "no_doc_expected": false
+  },
+  "BT027": {
+    "document_files": [
+      "IMG_4538.png"
+    ],
+    "customer_invoice_numbers": [],
+    "anomalies": [],
+    "no_doc_expected": false
+  },
+  "BT028": {
+    "document_files": [
+      "faktura_nordstrom_illustration_2026-14.pdf"
+    ],
+    "customer_invoice_numbers": [],
+    "anomalies": [],
+    "no_doc_expected": false
+  },
+  "BT029": {
+    "document_files": [
+      "sj_biljett_STO-GBG_1008.pdf"
+    ],
+    "customer_invoice_numbers": [],
+    "anomalies": [],
+    "no_doc_expected": false
+  },
+  "BT030": {
+    "document_files": [],
+    "customer_invoice_numbers": [
+      "INVOICE#00073"
+    ],
+    "anomalies": [],
+    "no_doc_expected": false
+  },
+  "BT031": {
+    "document_files": [
+      "uber_receipt_1009.eml"
+    ],
+    "customer_invoice_numbers": [],
+    "anomalies": [],
+    "no_doc_expected": false
+  },
+  "BT032": {
+    "document_files": [],
+    "customer_invoice_numbers": [
+      "INVOICE#00056"
+    ],
+    "anomalies": [],
+    "no_doc_expected": false
+  },
+  "BT033": {
+    "document_files": [
+      "ljungbergs_faktura_30412.pdf"
+    ],
+    "customer_invoice_numbers": [],
+    "anomalies": [],
+    "no_doc_expected": false
+  },
+  "BT034": {
+    "document_files": [],
+    "customer_invoice_numbers": [],
+    "anomalies": [],
+    "no_doc_expected": true
+  },
+  "BT035": {
+    "document_files": [],
+    "customer_invoice_numbers": [
+      "INVOICE#00098"
+    ],
+    "anomalies": [],
+    "no_doc_expected": false
+  },
+  "BT036": {
+    "document_files": [],
+    "customer_invoice_numbers": [
+      "INVOICE#00099"
+    ],
+    "anomalies": [],
+    "no_doc_expected": false
+  }
+}

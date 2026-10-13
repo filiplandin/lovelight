@@ -1,0 +1,20 @@
+{
+  "name": "lovelight-video",
+  "private": true,
+  "scripts": {
+    "studio": "remotion studio",
+    "render": "remotion render Lovelight out/lovelight.mp4",
+    "assets": "node scripts/sfx.mjs && sh scripts/thumbs.sh"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.528",
+    "@remotion/google-fonts": "4.0.528",
+    "remotion": "4.0.528",
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "19.1.8",
+    "typescript": "5.8.3"
+  }
+}

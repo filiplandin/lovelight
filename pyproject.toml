@@ -1,0 +1,59 @@
+[project]
+name = "lovelight"
+version = "0.1.0"
+description = "AI bookkeeping for accounting bureaus: Claude extracts receipts and invoices, deterministic code posts balanced BAS vouchers, matches bank lines and exports SIE4."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+keywords = ["accounting", "bookkeeping", "llm", "claude", "sie4", "fastapi"]
+classifiers = [
+    "Programming Language :: Python :: 3.12",
+    "Framework :: FastAPI",
+    "Topic :: Office/Business :: Financial :: Accounting",
+]
+authors = [
+    { name = "Filip Landin", email = "93656596+filiplandin@users.noreply.github.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "anthropic>=1.13.0",
+    "fastapi>=0.143.0",
+    "pillow>=12.3.0",
+    "pydantic>=2.14.1",
+    "pypdf>=6.20.1",
+    "python-dotenv>=1.2.4",
+    "python-multipart>=0.0.32",
+    "rapidfuzz>=3.14.6",
+    "reportlab>=5.0.1",
+    "uvicorn>=0.54.0",
+]
+
+[project.scripts]
+lovelight = "lovelight:main"
+
+[build-system]
+requires = ["uv_build>=0.9.3,<0.10.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "pytest>=9.1.1",
+    "ruff>=0.17.0",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+extend-exclude = ["video", "docs"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+# Long lines are prompt text, fixture data and SQL; wrapping them hurts readability.
+ignore = ["E501"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["lovelight"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
