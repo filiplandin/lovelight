@@ -30,3 +30,6 @@ video/out/
 .ruff_cache/
 *.db
 *.sqlite3
+
+# Screen recordings (regenerate: scripts/record_demo.py)
+video/public/rec/

@@ -1,5 +1,5 @@
 import React from "react";
-import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, Sequence, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { C, FONT, MONO } from "../theme";
 
 export const W = 1080;
@@ -151,5 +151,15 @@ export const Tick: React.FC<{ ok: boolean; size?: number; p?: number }> = ({ ok,
         <path d="M8.5 8.5l7 7M15.5 8.5l-7 7" fill="none" stroke={col} strokeWidth={2.6} strokeLinecap="round" strokeDasharray={20} strokeDashoffset={20 * (1 - p)} />
       )}
     </svg>
+  );
+};
+
+/** Fades its children in over `fade` frames from `from`; used to cut between two segments of one recording. */
+export const Cut: React.FC<{ from: number; dur: number; fade?: number; children: React.ReactNode }> = ({ from, dur, fade = 5, children }) => {
+  const frame = useCurrentFrame();
+  return (
+    <Sequence from={from} durationInFrames={dur} layout="none">
+      <AbsoluteFill style={{ opacity: fade > 0 ? ramp(frame, from, from + fade) : 1 }}>{children}</AbsoluteFill>
+    </Sequence>
   );
 };

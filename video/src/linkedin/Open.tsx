@@ -260,16 +260,19 @@ export const BlackBox: React.FC = () => {
           width: 380,
           height: 380,
           borderRadius: 34,
-          background: "linear-gradient(160deg, #1a1b22, #050507)",
-          border: `3px solid ${red ? `rgba(248,113,113,${0.4 + 0.6 * pulse})` : "#26272f"}`,
-          boxShadow: red ? `0 0 ${50 + 50 * pulse}px rgba(248,113,113,${0.25 + 0.25 * pulse}), inset 0 2px 0 rgba(255,255,255,.06)` : "0 40px 90px rgba(0,0,0,.7), inset 0 2px 0 rgba(255,255,255,.06)",
+          background: "linear-gradient(160deg, #3a3d4c, #14151c 70%)",
+          border: `4px solid ${red ? `rgba(248,113,113,${0.55 + 0.45 * pulse})` : "#5a5e70"}`,
+          boxShadow: red
+            ? `0 0 ${60 + 60 * pulse}px rgba(248,113,113,${0.35 + 0.3 * pulse}), inset 0 3px 0 rgba(255,255,255,.14)`
+            : "0 0 80px rgba(139,108,255,0.25), 0 40px 90px rgba(0,0,0,.7), inset 0 3px 0 rgba(255,255,255,.14)",
           display: "grid",
           placeItems: "center",
           transform: `scale(${0.8 + 0.2 * box})`,
           opacity: box,
         }}
       >
-        <div style={{ fontSize: 150, fontWeight: 800, letterSpacing: "-0.05em", color: "#2c2d36" }}>AI</div>
+        <div style={{ fontSize: 170, fontWeight: 800, letterSpacing: "-0.05em", color: "#c9ccd8", textShadow: "0 4px 30px rgba(0,0,0,.6)" }}>AI</div>
+        <div style={{ position: "absolute", bottom: 34, fontSize: 26, fontWeight: 700, letterSpacing: "0.3em", color: "#8a8ea2" }}>BLACK BOX</div>
       </div>
       <div
         style={{
@@ -290,12 +293,12 @@ export const BlackBox: React.FC = () => {
       {qs.map((q, i) => {
         const p = spring({ frame: frame - 40 - i * 6, fps, config: { damping: 14 } });
         const pos = [
-          [70, 420],
-          [720, 470],
-          [60, 1080],
+          [60, 410],
+          [640, 470],
+          [70, 1090],
         ][i];
         return (
-          <div key={q} style={{ position: "absolute", left: pos[0], top: pos[1], fontSize: 32, fontWeight: 700, color: C.red, opacity: p, transform: `scale(${0.7 + 0.3 * p}) rotate(${(i - 1) * -4}deg)` }}>
+          <div key={q} style={{ position: "absolute", left: pos[0], top: pos[1], fontSize: 40, fontWeight: 800, color: C.red, opacity: p, textShadow: `0 0 24px ${C.red}66`, transform: `scale(${0.7 + 0.3 * p}) rotate(${(i - 1) * -4}deg)` }}>
             {q}
           </div>
         );
@@ -319,7 +322,7 @@ export const Bridge: React.FC = () => {
         <Logo size={170} />
         <div style={{ fontSize: 120, fontWeight: 800, letterSpacing: "-0.045em" }}>Lovelight</div>
       </div>
-      <div style={{ position: "absolute", left: 80, right: 80, top: 1020, textAlign: "center", fontSize: 34, color: C.muted, fontWeight: 500, lineHeight: 1.4, opacity: ramp(frame, 14, 26) }}>
+      <div style={{ position: "absolute", left: 80, right: 80, top: 1010, textAlign: "center", fontSize: 42, color: C.text, fontWeight: 500, lineHeight: 1.4, opacity: ramp(frame, 14, 26) }}>
         AI bookkeeping for accounting firms
         <br />
         <span style={GRAD_TEXT}>Fortnox / Visma</span>

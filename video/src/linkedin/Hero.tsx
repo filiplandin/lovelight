@@ -4,7 +4,7 @@ import { Easing, interpolate, spring, useCurrentFrame, useVideoConfig } from "re
 import { C, sek } from "../theme";
 import { Clip } from "./Clip";
 import { CHAIN, INJECTION, LUMP, LUMP_DOCS, WHY } from "./facts";
-import { BOX, Caption, LStage, Mono, Panel, Tick, W, ramp } from "./ui";
+import { BOX, Caption, Cut, LStage, Mono, Panel, Tick, W, ramp } from "./ui";
 
 // Rough boxes for a 1440x1350 recording, used only if a clip's .json marks are missing.
 const FB_RECON = { row: [0.18, 0.4, 0.8, 0.16], bank: [0.19, 0.42, 0.3, 0.1], connector: [0.5, 0.42, 0.1, 0.12], docs: [0.6, 0.4, 0.3, 0.16] };
@@ -22,16 +22,20 @@ export const Recon: React.FC = () => (
       lead={0.2}
       fallback={FB_RECON}
       cam={[
-        { f: 0, at: "row", z: 1.15 },
-        { f: 26, at: { m: "bank", fx: 0.35 }, z: 1.8 },
-        { f: 62, at: { m: "bank", fx: 0.35 }, z: 1.8 },
-        { f: 92, at: "connector", z: 1.6 },
-        { f: 118, at: "docs", z: 1.7 },
+        { f: 0, at: "row", z: 1.25 },
+        { f: 16, at: "bank", z: 2.8 },
+        { f: 56, at: "bank", z: 2.8 },
+        { f: 76, at: { m: "connector", fx: 0.45 }, z: 2.6 },
+        { f: 96, at: "docs", z: 2.4 },
       ]}
-      rings={[{ f: 30, at: "bank", dur: 40 }]}
+      rings={[
+        { f: 16, at: "bank", dur: 40, color: C.amber },
+        { f: 96, at: "docs", dur: 24 },
+      ]}
     />
   </LStage>
 );
+
 
 // ---------------------------------------------------------------- 6. references + exact sum (overlay on frozen recon)
 
@@ -51,7 +55,7 @@ export const RefsSum: React.FC = () => {
   const total = ramp(frame, 54, 62);
   return (
     <LStage>
-      <Caption text="References + exact sum. | *To the öre.*" />
+      <Caption text="References + exact sum. | *To the last digit.*" />
       <Clip name="recon" title="Reconciliation (frozen frame)" anchor="end" lead={0.4} freeze={0} dim={0.82} fallback={FB_RECON} cam={[{ f: 0, at: "row", z: 1.1 }]} />
       <div style={{ position: "absolute", left: 0, right: 0, top: REF_Y - 52, textAlign: "center", fontSize: 24, color: C.muted, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase" }}>
         Bank reference
@@ -112,7 +116,8 @@ export const Why: React.FC = () => {
   const { fps } = useVideoConfig();
   const card = spring({ frame: frame - 42, fps, config: { damping: 18, stiffness: 120 } });
   const contrib = WHY.rows.map((r) => r.weight * r.value);
-  const shown = contrib.reduce((s, c, i) => s + c * ramp(frame, WHY_ROW_AT[i], WHY_ROW_AT[i] + 8), 0);
+  // Steps through real partial sums (40, 70, 75, 84) as each row lands, then the gate lifts it to 95.
+  const shown = contrib.reduce((s, c, i) => s + (frame >= WHY_ROW_AT[i] + 4 ? c : 0), 0);
   const floor = ramp(frame, WHY_SCORE_AT - 4, WHY_SCORE_AT);
   const score = frame >= WHY_SCORE_AT ? WHY.score : Math.round(shown);
   const pop = spring({ frame: frame - WHY_SCORE_AT, fps, config: { damping: 9, stiffness: 200 } });
@@ -128,8 +133,8 @@ export const Why: React.FC = () => {
         dim={0.75 * card}
         fallback={{ pill: [0.5, 0.44, 0.07, 0.02], pop: [0.38, 0.47, 0.31, 0.3] }}
         cam={[
-          { f: 0, at: "pill", z: 1.6 },
-          { f: 22, at: "pop", z: 2.2 },
+          { f: 0, at: "pill", z: 2.6 },
+          { f: 24, at: "pop", z: 2.6 },
         ]}
         rings={[{ f: 2, at: "pill", dur: 22 }]}
       />
@@ -223,16 +228,21 @@ export const Approve: React.FC = () => (
       title="Approval · ≥95% auto-approves, the rest wait for a click"
       steps={["/?view=recon after a fresh replay", "BT014 shows green 'Approved' + method", "click Approve on a lower-scored match"]}
       anchor="approved"
-      lead={0.6}
-      fallback={{ row: [0.18, 0.4, 0.8, 0.16], approved: [0.88, 0.42, 0.1, 0.08] }}
+      lead={0.3}
+      rate={1.6}
+      // BT014 auto-approved at 95%, then the 94% Figma row approved by hand; its "Match approved" toast sits bottom-right.
+      fallback={{ row: [0.18, 0.4, 0.8, 0.16], approved: [0.88, 0.42, 0.1, 0.08], toast: [0.737, 0.935, 0.248, 0.049] }}
       cam={[
-        { f: 0, at: "row", z: 1.3 },
-        { f: 18, at: "approved", z: 1.9 },
-        { f: "other_row", at: "other_btn", z: 1.9 },
+        { f: 0, at: [0.74, 0.666], z: 2.0 },
+        { f: ["other_row", -12], at: [0.74, 0.666], z: 2.0 },
+        { f: ["other_row", -2], at: [0.735, 0.41], z: 2.0 },
+        { f: ["other_clicked", -2], at: [0.735, 0.41], z: 2.0 },
+        { f: ["other_clicked", 8], at: "toast", z: 2.2 },
       ]}
       rings={[
-        { f: 14, at: "approved", dur: 30, color: C.green },
-        { f: ["other_clicked", -4], at: "other_btn", dur: 24, color: C.green },
+        { f: 4, at: "approved", dur: 30, color: C.green },
+        { f: ["other_clicked", -10], at: "other_btn", dur: 14, color: C.green },
+        { f: ["other_clicked", 8], at: "toast", dur: 22, color: C.green },
       ]}
     />
   </LStage>
@@ -240,27 +250,47 @@ export const Approve: React.FC = () => (
 
 // ---------------------------------------------------------------- 9. REC trace
 
+const TRACE_CUT = 48;
+
 export const Trace: React.FC = () => (
   <LStage>
     <Caption text="Every krona traces to a *source.*" />
-    <Clip
-      name="trace"
-      title="Telia invoice: source PDF ↔ extracted fields ↔ voucher"
-      steps={["/?view=inbox", "open telia_faktura_88213456.pdf", "wait for the PDF preview", "scroll the drawer to the Voucher section"]}
-      anchor="preview"
-      lead={0.2}
-      rate={1.25}
-      fallback={{ preview: [0.37, 0.1, 0.31, 0.5], gross: [0.7, 0.35, 0.13, 0.05], voucher: [0.68, 0.5, 0.3, 0.25] }}
-      cam={[
-        { f: 0, at: { m: "preview", fx: 0.75, fy: 0.42 }, z: 2.0 },
-        { f: 30, at: { m: "preview", fx: 0.75, fy: 0.42 }, z: 2.0 },
-        { f: 48, at: "gross", z: 1.8 },
-        { f: ["voucher", -6], at: "gross", z: 1.5 },
-        { f: ["voucher", 8], at: "voucher_total", z: 1.7 },
-      ]}
-      links={[{ f: 22, from: { m: "preview", fx: 0.86, fy: 0.42 }, to: "gross", dur: 22 }]}
-      rings={[{ f: 44, at: "gross", dur: 30, color: C.green }]}
-    />
+    {/* PDF total -> extracted Gross field, then cut past the drawer scroll to the balanced voucher. */}
+    <Cut from={0} dur={TRACE_CUT + 4} fade={0}>
+      <Clip
+        name="trace"
+        title="Telia invoice: source PDF ↔ extracted fields ↔ voucher"
+        steps={["/?view=inbox", "open telia_faktura_88213456.pdf", "wait for the PDF preview", "scroll the drawer to the Voucher section"]}
+        anchor="preview"
+        lead={0.2}
+        rate={1.25}
+        fallback={{ preview: [0.37, 0.1, 0.31, 0.5], gross: [0.7, 0.35, 0.13, 0.05] }}
+        cam={[
+          { f: 0, at: { m: "preview", fx: 0.76, fy: 0.52 }, z: 2.5 },
+          { f: 12, at: { m: "preview", fx: 0.76, fy: 0.52 }, z: 2.5 },
+          { f: 30, at: [0.575, 0.32], z: 2.0 },
+        ]}
+        links={[{ f: 16, from: { m: "preview", fx: 0.86, fy: 0.52 }, to: { m: "gross", fx: 0.1 }, dur: 16 }]}
+        rings={[{ f: 30, at: "gross", dur: 22, color: C.green }]}
+      />
+    </Cut>
+    <Cut from={TRACE_CUT} dur={90 - TRACE_CUT}>
+      <Clip
+        name="trace"
+        title="Telia voucher · balanced"
+        anchor="voucher_total"
+        lead={0.6}
+        fallback={{ voucher: [0.68, 0.5, 0.3, 0.25], balanced: [0.885, 0.433, 0.098, 0.022] }}
+        cam={[
+          { f: 0, at: { m: "voucher", fy: 0.55 }, z: 2.2 },
+          { f: 42, at: { m: "voucher", fy: 0.55 }, z: 2.35 },
+        ]}
+        rings={[
+          { f: 6, at: "voucher_total", dur: 30, color: C.green },
+          { f: 12, at: "balanced", dur: 28, color: C.green },
+        ]}
+      />
+    </Cut>
   </LStage>
 );
 
@@ -283,15 +313,21 @@ export const Inject: React.FC = () => {
         title="Nordic Growth Partners · 8 750 kr · Quarantined"
         steps={["/?view=inbox → filter 'Quarantined'", "open faktura_nordic_growth_partners_7781.pdf", "hold on 'Never posted. Quarantined documents cannot reach the ledger.'"]}
         anchor="pill"
-        lead={0.5}
+        lead={0}
         box={{ ...BOX, height: 470 }}
-        fallback={{ pill: [0.75, 0.02, 0.07, 0.03], never: [0.68, 0.6, 0.3, 0.08] }}
+        // Drawer header + red "quarantined" pill, the injection warning box, then "Never posted" in the voucher slot.
+        fallback={{ pill: [0.75, 0.02, 0.07, 0.03], anomaly: [0.5949, 0.0712, 0.3847, 0.1841], never: [0.68, 0.6, 0.3, 0.08] }}
         cam={[
-          { f: 0, at: "pill", z: 1.8 },
-          { f: 40, at: "pill", z: 1.8 },
-          { f: ["never", 0], at: "never", z: 1.6 },
+          { f: 0, at: [0.46, 0.03], z: 2.0 },
+          { f: 12, at: [0.46, 0.03], z: 2.0 },
+          { f: 26, at: { m: "anomaly", fy: 0.42 }, z: 2.2 },
+          { f: ["never", -14], at: { m: "anomaly", fy: 0.42 }, z: 2.2 },
+          { f: ["never", -2], at: "never", z: 2.4 },
         ]}
-        rings={[{ f: 6, at: "pill", dur: 34, color: C.red }]}
+        rings={[
+          { f: 2, at: "pill", dur: 24, color: C.red },
+          { f: ["never", 2], at: "never", dur: 26, color: C.red },
+        ]}
       />
       <Panel
         glow={C.red}
@@ -347,13 +383,15 @@ export const Correct: React.FC = () => (
       title="Change account → reversal + re-post, nothing edited"
       steps={["open the posted Kjell & Company receipt (349 kr)", "Change account → 6110, reason 'Office supplies, not equipment'", "Reverse & re-post", "hold on 'A## reverses A##; A## re-posts it. Nothing was edited.'"]}
       anchor="fix"
-      lead={1.6}
+      lead={1.0}
       fallback={{ form: [0.7, 0.5, 0.28, 0.12], fix: [0.7, 0.45, 0.28, 0.06] }}
       cam={[
-        { f: 0, at: "form", z: 1.7 },
-        { f: ["fix", 0], at: "fix", z: 2.0 },
+        { f: 0, at: "form", z: 2.4 },
+        { f: ["fix", -6], at: "form", z: 2.4 },
+        { f: ["fix", 6], at: { m: "fix", fy: 0.85 }, z: 2.4 },
+        { f: 90, at: { m: "fix", fy: 0.85 }, z: 2.55 },
       ]}
-      rings={[{ f: ["fix", 4], at: "fix", dur: 40, color: C.green }]}
+      rings={[{ f: ["fix", 4], at: "fix", dur: 44, color: C.green }]}
     />
   </LStage>
 );
@@ -387,8 +425,8 @@ export const Audit: React.FC = () => {
         dim={0.97 * over}
         fallback={{ badge: [0.18, 0.2, 0.3, 0.04], head: [0.6, 0.2, 0.2, 0.03] }}
         cam={[
-          { f: 0, at: "badge", z: 2.0 },
-          { f: 40, at: "badge", z: 2.2 },
+          { f: 0, at: "badge", z: 2.7 },
+          { f: 40, at: "badge", z: 2.95 },
         ]}
         rings={[{ f: 6, at: "badge", dur: 34, color: C.green }]}
       />

@@ -6,7 +6,7 @@ from src/lovelight/static/app.js. Every important moment is saved as a mark (sec
 element's box, normalised to the viewport) so the Remotion <Clip> can trim and zoom without hand-tuned numbers.
 
     uv run python scripts/generate_data.py
-    uv run uvicorn lovelight.server:app --port 8000
+    LOVELIGHT_DB=/tmp/ll_rec.db GMAIL_USER= ANTHROPIC_API_KEY= uv run uvicorn lovelight.server:app --port 8600
     uv run --with playwright==1.60.0 python scripts/record_demo.py              # all clips
     uv run --with playwright==1.60.0 python scripts/record_demo.py recon why    # a subset
 
@@ -315,8 +315,13 @@ def shot_approve(r: Recorder) -> None:
     r.move_to(actions, 700)
     r.mark("approved", actions)
     r.hold(1800)
-    other = page.locator(".mrow:not(.approved)").first
-    if other.count():
+    # Matches whose documents still need review are blocked server-side (409), so pick the first unblocked one.
+    ready = page.evaluate(
+        "() => window.Lovelight.state().matches.filter((m) => !m.approved && !(m.blocked_by || []).length).map((m) => m.id)"
+    )
+    btns = [b for b in page.locator(".mrow:not(.approved) [data-approve]").all() if b.get_attribute("data-approve") in ready]
+    if btns:
+        other = btns[0].locator("xpath=ancestor::*[contains(concat(' ', @class, ' '), ' mrow ')][1]")
         r.center(other)
         r.mark("other_row", other)
         ob = other.locator("[data-approve]")
@@ -385,8 +390,9 @@ def shot_inject(r: Recorder) -> None:
 
 
 def shot_correct(r: Recorder) -> None:
-    """Assumes the posted Kjell receipt has a live voucher (so .correct-form renders). Picks 6110 if offered."""
-    drawer = open_doc(r, r.targets["correct"], filt="posted")
+    """Assumes the Kjell receipt has a live voucher (so .correct-form renders). Picks 6110 if offered.
+    The receipt is bank-matched (status 'matched'), so it only appears under the 'all' filter, not 'posted'."""
+    drawer = open_doc(r, r.targets["correct"])
     form = drawer.locator("form.correct-form")
     r.center(form)
     r.mark("form", form)
@@ -550,7 +556,7 @@ def _record(browser, args, name: str, shot: Shot) -> Path:
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("shots", nargs="*", metavar="SHOT", help=f"clips to record (default: all): {', '.join(SHOTS)}")
-    ap.add_argument("--base-url", default="http://localhost:8000")
+    ap.add_argument("--base-url", default="http://localhost:8600")
     ap.add_argument("--out", type=Path, default=OUT, help="output dir (default: video/public/rec)")
     # 1440 wide: at 1080 the sidebar leaves ~280 px per recon column and long bank texts get ellipsised.
     # Remotion crops/zooms the clip into the 1080x1350 frame either way.
