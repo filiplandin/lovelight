@@ -12,3 +12,12 @@
 - **Public portfolio repo, MIT.** Verification layer = `tests/test_repo_quality.py` (secret/path scan, env docs, README paths, lint, JS parse) so hygiene is enforced, not remembered.
 - **Ruff pinned in pyproject (E,F,I,UP,B; E501 ignored).** Overrides strict global config; long lines are prompts/fixtures where wrapping hurts. Lint-only, no reformat churn.
 - **Hackathon artefacts in `docs/hackathon/`, not deleted.** Provenance for the story; out of the root.
+- **Knowledge base as data (`src/lovelight/knowledge/*.yaml`), no vendor names in `.py`.** Accountants can read, review and version it; a test enforces the split. Retrieval is deterministic (org nr > email domain > whole-token alias > bank pattern) so a hit is explainable.
+- **Classification = vendor profile → activity → policy-constrained BAS account → corrections memory.** The activity says what a cost *is*; the policy bounds the model; a human correction beats both. Every choice carries a written rationale.
+- **Micromobility and shared bikes are `local_transport` → 5800 Travel, not 5810 Tickets.** They replace a metro/bike trip like taxi does; 5810 stays ticketed public transport, rail and air. VAT allows {6 %, 25 %} and is flagged ambiguous instead of guessed.
+- **Confidence = weighted mean of named checks + hard gates, model self-report weighted 0.20.** Explainable to an auditor check by check; the model cannot talk its way past arithmetic or an illegal VAT rate. It is a gate, not a probability (ECE 0.55 on perturbed data), and is reported as such.
+- **Corrections and history match on KB id → org nr → exact name, never fuzzy.** A fuzzy hit would let one supplier's correction re-book another's costs.
+- **Hash-chained, append-only audit log; `/api/audit/verify` checks chain and ledger.** Tamper-evidence is cheap and is what an auditor asks for first. Limit: does not stop someone who rewrites the whole DB; anchoring the head hash is roadmap.
+- **High-severity anomaly holds before posting; payments wait for their documents.** A flag after an auto-post would leave a wrong voucher in the books; holding first is cheaper than reversing.
+- **Rolling Fly deploy, single machine, SQLite.** Bluegreen does not work with volume-backed machines; Postgres makes the app stateless and unlocks it.
+- **Light connector is read-only and its API contract is marked unverified.** No public API docs were available; refusing non-GET before I/O makes accidental writes impossible.

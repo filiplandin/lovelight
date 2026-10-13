@@ -197,7 +197,7 @@
   },
   "BT027": {
     "document_files": [
-      "IMG_4538.png"
+      "kvitto_nordvik_pendel_1006.pdf"
     ],
     "customer_invoice_numbers": [],
     "anomalies": [],
@@ -205,7 +205,7 @@
   },
   "BT028": {
     "document_files": [
-      "faktura_nordstrom_illustration_2026-14.pdf"
+      "IMG_4538.png"
     ],
     "customer_invoice_numbers": [],
     "anomalies": [],
@@ -213,13 +213,37 @@
   },
   "BT029": {
     "document_files": [
-      "sj_biljett_STO-GBG_1008.pdf"
+      "kvitto_svepa_1005.pdf"
     ],
     "customer_invoice_numbers": [],
     "anomalies": [],
     "no_doc_expected": false
   },
   "BT030": {
+    "document_files": [
+      "kvitto_trampa_1007.pdf"
+    ],
+    "customer_invoice_numbers": [],
+    "anomalies": [],
+    "no_doc_expected": false
+  },
+  "BT031": {
+    "document_files": [
+      "faktura_nordstrom_illustration_2026-14.pdf"
+    ],
+    "customer_invoice_numbers": [],
+    "anomalies": [],
+    "no_doc_expected": false
+  },
+  "BT032": {
+    "document_files": [
+      "sj_biljett_STO-GBG_1008.pdf"
+    ],
+    "customer_invoice_numbers": [],
+    "anomalies": [],
+    "no_doc_expected": false
+  },
+  "BT033": {
     "document_files": [],
     "customer_invoice_numbers": [
       "INVOICE#00073"
@@ -227,7 +251,7 @@
     "anomalies": [],
     "no_doc_expected": false
   },
-  "BT031": {
+  "BT034": {
     "document_files": [
       "uber_receipt_1009.eml"
     ],
@@ -235,7 +259,7 @@
     "anomalies": [],
     "no_doc_expected": false
   },
-  "BT032": {
+  "BT035": {
     "document_files": [],
     "customer_invoice_numbers": [
       "INVOICE#00056"
@@ -243,7 +267,7 @@
     "anomalies": [],
     "no_doc_expected": false
   },
-  "BT033": {
+  "BT036": {
     "document_files": [
       "ljungbergs_faktura_30412.pdf"
     ],
@@ -251,13 +275,13 @@
     "anomalies": [],
     "no_doc_expected": false
   },
-  "BT034": {
+  "BT037": {
     "document_files": [],
     "customer_invoice_numbers": [],
     "anomalies": [],
     "no_doc_expected": true
   },
-  "BT035": {
+  "BT038": {
     "document_files": [],
     "customer_invoice_numbers": [
       "INVOICE#00098"
@@ -265,7 +289,7 @@
     "anomalies": [],
     "no_doc_expected": false
   },
-  "BT036": {
+  "BT039": {
     "document_files": [],
     "customer_invoice_numbers": [
       "INVOICE#00099"

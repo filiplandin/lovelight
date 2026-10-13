@@ -60,6 +60,7 @@ class FakeExtractor:
                     vat=vat,
                     gross=net + vat,
                     suggested_account="6110",
+                    activity="office_supplies",
                     confidence=0.99,
                 ),
                 "fake-model",

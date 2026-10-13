@@ -1,0 +1,41 @@
+# Fly.io: one machine in Stockholm (data stays in the EU), SQLite on a persistent volume.
+# fly volumes create lovelight_data --region arn --size 1 && fly deploy
+app = "lovelight"
+primary_region = "arn"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  LOVELIGHT_DB = "/data/lovelight.db"
+
+# SQLite allows a single writer, so this app runs one machine. Volume-backed machines cannot use the
+# bluegreen strategy; a rolling deploy waits for the health check below and halts on failure, leaving
+# the old release serving. Roll back with `fly deploy --image <previous>`. With Postgres (roadmap) the
+# app becomes stateless and can move to strategy = "bluegreen" for automatic cut-over/rollback.
+[deploy]
+  strategy = "rolling"
+  max_unavailable = 1
+  wait_timeout = "5m"
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = "off"
+  auto_start_machines = true
+  min_machines_running = 1
+
+  [[http_service.checks]]
+    grace_period = "20s"
+    interval = "15s"
+    timeout = "5s"
+    method = "GET"
+    path = "/api/health"
+
+[mounts]
+  source = "lovelight_data"
+  destination = "/data"
+
+[[vm]]
+  memory = "512mb"
+  cpus = 1

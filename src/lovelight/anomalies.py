@@ -9,6 +9,7 @@ from statistics import median
 
 from rapidfuzz import fuzz
 
+from lovelight import knowledge
 from lovelight.ledger import FX_TO_SEK, to_sek
 from lovelight.light_csv import dec, invoice_date, parse_date
 from lovelight.models import VAT_RATES, Anomaly, AnomalyKind, BankTx, DocType, Document, Match, Source
@@ -17,7 +18,6 @@ DUPLICATE_WINDOW_DAYS = 45
 BANK_FEE_LIMIT = Decimal("50")
 NO_DOC_TEXT_RE = re.compile(r"skatt|\bskv\b|\bl[oö]n\b|avgift|kortavg|\bfee\b|prispaket", re.I)
 VAT_TOLERANCE = Decimal("0.05")
-TRANSPORT_RE = re.compile(r"\b(sl|sj|storstockholms lokaltrafik|taxi|uber|bolt|flygbuss|arlanda express)\b", re.I)
 INJECTION_RE = re.compile(
     r"ignore (all |any )?(previous|prior|above) instructions|disregard .{0,30}instructions|system prompt"
     r"|you are now|approve (this|the) (invoice|payment)|mark (this|it) as (paid|approved)|change .{0,20}(iban|bankgiro)"
@@ -112,13 +112,30 @@ def scan_documents(docs: list[Document], txs: list[BankTx], matches: list[Match]
     return out
 
 
+def _expected_vat(d: Document) -> tuple[list[Decimal], str]:
+    """Legal VAT rates for this document: classification, else a KB lookup, else the model's activity."""
+    e = d.extraction
+    if d.classification and d.classification.expected_vat_rates:
+        return list(d.classification.expected_vat_rates), f"Activity '{d.classification.activity}'"
+    kb = knowledge.load()
+    hit = kb.lookup(vendor=e.vendor, org_nr=e.vendor_org_nr, email=d.sender)
+    if hit:
+        rates = hit.vat_rates or kb.activities[hit.activity].vat_rates
+        return list(rates), f"{hit.vendor_name} ({hit.activity})"
+    if e.activity in kb.activities:
+        return list(kb.activities[e.activity].vat_rates), f"Activity '{e.activity}'"
+    return [], ""
+
+
 def _vat_checks(d: Document) -> list[Anomaly]:
     e = d.extraction
     problems = []
     if e.vat_rate not in VAT_RATES:
         problems.append(f"VAT rate {e.vat_rate:.0%} is not a Swedish rate (25/12/6/0 %).")
-    if e.doc_type != DocType.CUSTOMER_INVOICE and TRANSPORT_RE.search(e.vendor) and e.vat_rate != Decimal("0.06"):
-        problems.append(f"Domestic passenger transport carries 6 % VAT, but {e.vat_rate:.0%} was charged.")
+    rates, basis = _expected_vat(d)
+    if e.doc_type != DocType.CUSTOMER_INVOICE and rates and e.vat_rate in VAT_RATES and e.vat_rate not in rates:
+        allowed = "/".join(f"{r:.0%}" for r in sorted(rates, reverse=True))
+        problems.append(f"{basis} carries {allowed} VAT, but {e.vat_rate:.0%} was charged.")
     if abs(e.net * e.vat_rate - e.vat) > VAT_TOLERANCE:
         problems.append(f"VAT {e.vat} does not equal net {e.net} × {e.vat_rate:.0%} = {e.net * e.vat_rate:.2f}.")
     if not problems:
@@ -126,7 +143,7 @@ def _vat_checks(d: Document) -> list[Anomaly]:
     return [Anomaly(
         id=f"a-vat-{d.id}", kind=AnomalyKind.VAT_MISMATCH, severity="medium",
         title=f"VAT looks wrong on {e.vendor}", explanation=" ".join(problems) + " Check before reclaiming input VAT.",
-        rule="vat_mismatch: rate in {25,12,6,0}; transport=6%; |net*rate-vat|<=0.05",
+        rule="vat_mismatch: rate in {25,12,6,0}; rate in the activity/vendor VAT policy; |net*rate-vat|<=0.05",
         document_id=d.id, invoice_number=e.invoice_number,
     )]
 

@@ -1,0 +1,190 @@
+# Curated vendor knowledge. Editable data: classification code never names a vendor.
+# Matching (see knowledge/kb.py): org_nr > email_domain > alias > bank_pattern. Aliases and bank patterns
+# match whole tokens after lowercasing, stripping accents and legal suffixes ("AB", "Inc", "ApS"...).
+# vat_rates narrows the activity's legal set when this vendor only sells at one rate. Leave it empty when
+# the vendor's rate genuinely varies (e-scooters, bikes) so the document is flagged as ambiguous.
+# Only vendors whose activity is unambiguous belong here.
+version: "2026.10-1"
+vendors:
+  # ---- public transport (5810 Tickets)
+  - id: sl
+    name: SL (Storstockholms Lokaltrafik)
+    aliases: ["sl", "storstockholms lokaltrafik"]
+    bank_patterns: ["sl access", "sl app", "sl center", "storstockholms lok"]
+    email_domains: ["sl.se"]
+    org_nr: "556013-0683"
+    vendor_profile: Stockholm's public transport authority; sells metro, bus and commuter-rail tickets and passes.
+    activity: public_transport
+    vat_rates: ["0.06"]
+
+  - id: sj
+    name: SJ AB
+    aliases: ["sj"]
+    bank_patterns: ["sj"]
+    email_domains: ["sj.se"]
+    org_nr: "556196-1599"
+    vendor_profile: Swedish state-owned rail operator; sells long-distance and regional train tickets.
+    activity: public_transport
+    vat_rates: ["0.06"]
+
+  # ---- local transport (5800 Travel)
+  - id: taxi-stockholm
+    name: Taxi Stockholm
+    aliases: ["taxi stockholm", "taxi sthlm"]
+    bank_patterns: ["taxi stockholm", "taxi sthlm"]
+    email_domains: ["taxistockholm.se"]
+    vendor_profile: Stockholm taxi company; sells metered and fixed-price taxi rides.
+    activity: local_transport
+    vat_rates: ["0.06"]
+
+  - id: uber
+    name: Uber B.V.
+    aliases: ["uber"]
+    bank_patterns: ["uber"]
+    email_domains: ["uber.com"]
+    vendor_profile: Ride-hailing platform; receipts are for passenger rides booked in the app.
+    activity: local_transport
+    vat_rates: ["0.06"]
+    notes: Food-delivery receipts come from the same domain; at 12 % they fail the VAT check and go to review.
+
+  - id: bolt
+    name: Bolt Operations OÜ
+    aliases: ["bolt", "bolt operations"]
+    bank_patterns: ["bolt eu", "bolt"]
+    email_domains: ["bolt.eu"]
+    vendor_profile: Mobility app offering ride-hailing and shared e-scooters.
+    activity: local_transport
+    notes: Rides are 6 %, scooter hire may be 25 %; the activity's full legal set applies.
+
+  - id: voi
+    name: Voi Technology AB
+    aliases: ["voi", "voi technology"]
+    bank_patterns: ["voi"]
+    email_domains: ["voi.com", "voiapp.io"]
+    org_nr: "559160-2999"
+    vendor_profile: Shared e-scooter and e-bike operator; charges per unlock and per minute.
+    activity: local_transport
+    vat_rates: ["0.25"]
+    notes: Swedish receipts charge 25 % VAT (scooter hire, not passenger transport); verified on a ride-pass receipt, Oct 2026.
+
+  - id: tier-dott
+    name: TIER-Dott
+    aliases: ["tier mobility", "tier dott", "dott"]
+    bank_patterns: ["tier mobility", "ridedott"]
+    email_domains: ["tier.app", "ridedott.com"]
+    vendor_profile: Shared e-scooter and e-bike operator.
+    activity: local_transport
+
+  - id: lime
+    name: Lime (Neutron Holdings)
+    aliases: ["lime scooter", "neutron holdings"]
+    bank_patterns: ["lime ride", "lime rides", "li me"]
+    email_domains: ["li.me"]
+    vendor_profile: Shared e-scooter and e-bike operator.
+    activity: local_transport
+    notes: The bare word "lime" is not an alias; it would match unrelated companies.
+
+  - id: donkey-republic
+    name: Donkey Republic
+    aliases: ["donkey republic"]
+    bank_patterns: ["donkey republic", "donkey bike"]
+    email_domains: ["donkey.bike"]
+    vendor_profile: Bike-share operator; rents bikes by the trip or the day through an app.
+    activity: local_transport
+
+  - id: city-bikes
+    name: Stockholm City Bikes
+    aliases: ["city bikes", "citybikes"]
+    bank_patterns: ["city bikes", "citybikes"]
+    email_domains: ["citybikes.se"]
+    vendor_profile: City bike-share scheme; sells season cards and day passes.
+    activity: local_transport
+
+  - id: easypark
+    name: EasyPark AB
+    aliases: ["easypark"]
+    bank_patterns: ["easypark"]
+    email_domains: ["easypark.net", "easypark.se"]
+    vendor_profile: Parking payment app; receipts are parking sessions.
+    activity: parking
+    vat_rates: ["0.25"]
+
+  # ---- telecom, software, IT
+  - id: telia
+    name: Telia Sverige AB
+    aliases: ["telia", "telia sverige"]
+    bank_patterns: ["telia"]
+    email_domains: ["telia.se"]
+    org_nr: "556430-0142"
+    vendor_profile: Telecom operator; mobile subscriptions and business broadband.
+    activity: telecom
+
+  - id: fortnox
+    name: Fortnox AB
+    aliases: ["fortnox"]
+    bank_patterns: ["fortnox"]
+    email_domains: ["fortnox.se"]
+    org_nr: "556469-6291"
+    vendor_profile: Cloud bookkeeping, invoicing and payroll software.
+    activity: software_subscription
+
+  - id: adobe
+    name: Adobe Systems Software Ireland Ltd
+    aliases: ["adobe", "adobe systems software ireland"]
+    bank_patterns: ["adobe"]
+    email_domains: ["adobe.com"]
+    vendor_profile: Creative and document software sold as subscriptions (Creative Cloud, Acrobat).
+    country: IE
+    activity: software_subscription
+
+  - id: figma
+    name: Figma, Inc.
+    aliases: ["figma"]
+    bank_patterns: ["figma"]
+    email_domains: ["figma.com"]
+    vendor_profile: Collaborative design software sold per editor seat.
+    country: US
+    activity: software_subscription
+
+  - id: aws
+    name: Amazon Web Services EMEA SARL
+    aliases: ["amazon web services", "aws"]
+    bank_patterns: ["aws emea", "aws"]
+    email_domains: ["aws.amazon.com"]
+    vendor_profile: Cloud hosting and infrastructure services.
+    activity: it_services
+    notes: Amazon's retail marketplace is a different business and deliberately not listed.
+
+  - id: microsoft-365
+    name: Microsoft 365
+    aliases: ["microsoft 365", "office 365"]
+    bank_patterns: ["msft", "microsoft 365"]
+    vendor_profile: Office and collaboration software subscriptions.
+    activity: software_subscription
+    notes: Azure hosting is it_services; add a separate entry if the client uses it.
+
+  - id: google-workspace
+    name: Google Workspace
+    aliases: ["google workspace", "g suite"]
+    bank_patterns: ["google gsuite", "google workspace"]
+    vendor_profile: Email, documents and collaboration software subscriptions.
+    activity: software_subscription
+    notes: Google Ads is advertising; it is not covered by this entry.
+
+  # ---- equipment retail
+  - id: kjell
+    name: Kjell & Company
+    aliases: ["kjell company", "kjell co", "kjell"]
+    bank_patterns: ["kjell"]
+    email_domains: ["kjell.com"]
+    vendor_profile: Electronics accessories retailer (cables, adapters, chargers, peripherals).
+    activity: equipment
+
+  - id: clas-ohlson
+    name: Clas Ohlson
+    aliases: ["clas ohlson"]
+    bank_patterns: ["clas ohlson"]
+    email_domains: ["clasohlson.com"]
+    org_nr: "556035-8672"
+    vendor_profile: Hardware and home-electronics retailer.
+    activity: equipment

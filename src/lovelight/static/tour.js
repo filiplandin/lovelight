@@ -70,6 +70,13 @@
     return s.documents.find((d) => d.source !== "light_csv" && d.status === "posted" && voucherDocs.has(d.id) && d.extraction && +d.extraction.vat > 0 && +d.extraction.vat_rate === 0.25)
       || s.documents.find((d) => d.status === "posted" && voucherDocs.has(d.id));
   };
+  // Prefer a document where the activity policy or a correction overrode the model: the best "why" story.
+  const whyDoc = () => {
+    const s = st();
+    return s.documents.find((d) => d.classification && d.classification.overridden_model_account && d.extraction && d.extraction.confidence_detail)
+      || s.documents.find((d) => d.extraction && d.extraction.confidence_detail && d.status === "posted")
+      || firstVatDoc();
+  };
   const biggestMatch = () => {
     const rows = [...document.querySelectorAll(".mrow[data-n]")];
     return rows.sort((a, b) => +b.dataset.n - +a.dataset.n)[0] || null;
@@ -95,9 +102,22 @@
       enter: async () => { await L.refresh(); const d = firstVatDoc(); if (d) L.openDrawer(d.id); },
     },
     {
+      view: "inbox", dur: 11000, target: (t) => (t < 5000 ? ".drawer .why-acct" : ".drawer .why-conf"),
+      before: "\"94% confident\", and nobody can say why",
+      now: "Every account has a written reason. Every score splits into named checks; the model's opinion is just one of them",
+      enter: async () => {
+        const d = whyDoc();
+        if (!d) return;
+        L.openDrawer(d.id);
+        await sleep(50);
+        const why = $(".drawer .why-acct");
+        if (why) why.scrollIntoView({ block: "start" });
+      },
+    },
+    {
       view: "recon", dur: 9000, target: () => biggestMatch() || ".recon",
       before: "One payment covering three invoices, untangled in Excel",
-      now: "1 bank payment ↔ 3 invoices, matched to the öre with a confidence score",
+      now: "1 bank payment ↔ 3 invoices, matched to the cent, every score explained",
       enter: async () => { L.closeDrawer(); await L.refresh(); },
     },
     {
@@ -122,6 +142,12 @@
       view: "trust", dur: 7500, target: () => ".sev-group",
       before: "Changed supplier bankgiro & duplicate invoices found after payment",
       now: "Deterministic rules flag fraud patterns before money moves",
+    },
+    {
+      view: "audit", dur: 9000, target: (t) => (t < 3500 ? ".chain-hero" : ".audit-list"),
+      before: "Who changed this voucher, and when? Nobody remembers",
+      now: "Every step is hash-chained and re-verifiable. Edit one row and the chain breaks",
+      enter: async () => { L.closeDrawer(); await L.loadAudit(); },
     },
     {
       view: "bureau", dur: 7000, target: () => ".live-client",

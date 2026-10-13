@@ -4,7 +4,8 @@
   "scripts": {
     "studio": "remotion studio",
     "render": "remotion render Lovelight out/lovelight.mp4",
-    "assets": "node scripts/sfx.mjs && sh scripts/thumbs.sh"
+    "assets": "node scripts/sfx.mjs && sh scripts/thumbs.sh",
+    "render:linkedin": "remotion render LovelightLinkedIn out/lovelight-linkedin.mp4"
   },
   "dependencies": {
     "@remotion/cli": "4.0.528",

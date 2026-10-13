@@ -67,8 +67,30 @@ def test_reports_count_posted_only_and_reversal_nets_out():
     sale.status = cost.status = "posted"
     vs = [sale, cost, draft]
     assert pnl(vs) == {"revenue": D("1000.00"), "expenses": {"5410": D("400.00")}, "result": D("600.00")}
-    assert vat_return(vs) == {"05": D("1000.00"), "10": D("250.00"), "48": D("100.00"), "49": D("150.00")}
+    assert vat_return(vs) == {
+        "05": D("1000.00"), "10": D("250.00"), "21": D("0.00"), "22": D("0.00"), "30": D("0.00"),
+        "48": D("100.00"), "49": D("150.00"),
+    }
     bs = balance_sheet(vs)
     assert sum(bs["assets"].values()) == sum(bs["liabilities_equity"].values())
     rev = reverse(cost, 4)
     assert pnl(vs + [rev])["result"] == D("1000.00")
+
+
+def test_non_deductible_input_vat_is_booked_to_cost():
+    v = propose_voucher(make_doc(DocType.RECEIPT, "1200.00", "144.00", "0.12", "6072"), 3, None, None)
+    assert lines(v) == {("6072", D("1344.00"), 0), ("1930", 0, D("1344.00"))}
+    half = propose_voucher(make_doc(DocType.RECEIPT, "1000.00", "250.00", "0.25", "5820"), 4, None, None)
+    assert lines(half) == {("5820", D("1125.00"), 0), ("2640", D("125.00"), 0), ("1930", 0, D("1250.00"))}
+
+
+def test_zero_rated_foreign_software_self_assesses_reverse_charge():
+    doc = make_doc(DocType.RECEIPT, "100.00", "0.00", "0", "5420", "EUR")
+    doc.extraction.activity, doc.extraction.vendor_org_nr = "software_subscription", "IE6364992H"
+    v = propose_voucher(doc, 5, None, None)
+    v.status = "posted"
+    assert v.reverse_charge == "eu"
+    assert lines(v) == {("5420", D("1125.00"), 0), ("2645", D("281.25"), 0), ("2614", 0, D("281.25")),
+                        ("1930", 0, D("1125.00"))}
+    box = vat_return([v])
+    assert (box["21"], box["22"], box["30"], box["48"], box["49"]) == (D("1125.00"), 0, D("281.25"), D("281.25"), 0)

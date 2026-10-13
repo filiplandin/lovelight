@@ -1,0 +1,22 @@
+# Secrets and private documents never enter the build context.
+.env
+.env.*
+!.env.example
+data/incoming
+data/cache
+*.db
+*.sqlite
+*.sqlite3
+
+# Local tooling and unrelated projects
+.venv
+.git
+.github
+.pytest_cache
+.ruff_cache
+**/__pycache__
+.DS_Store
+video
+docs
+tests
+scripts

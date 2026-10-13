@@ -1,0 +1,58 @@
+# BAS chart of accounts used by Lovelight, with English names. Codes are the Swedish BAS standard.
+version: "2026.10-1"
+accounts:
+  "1510": Accounts receivable
+  "1930": Bank
+  "2099": Profit or loss for the year
+  "2440": Accounts payable
+  "2611": Output VAT 25%
+  "2614": Output VAT, reverse charge 25%
+  "2640": Input VAT
+  "2645": Input VAT on purchases from abroad
+  "3001": Sales, 25% VAT
+  "3740": Rounding
+  "3960": FX gains
+  "4010": Purchased materials and goods
+  "5010": Premises rent
+  "5060": Cleaning and waste
+  "5410": Consumable equipment
+  "5420": Software
+  "5611": Car fuel
+  "5800": Travel
+  "5810": Tickets (public transport, rail, air)
+  "5820": Car rental
+  "5831": Lodging
+  "5910": Advertising
+  "6071": Client entertainment, deductible
+  "6072": Client entertainment, non-deductible
+  "6110": Office supplies
+  "6212": Mobile phone
+  "6230": Internet and data
+  "6530": Accounting services
+  "6540": IT services
+  "6550": Consulting fees
+  "6570": Bank fees
+  "6990": Other external costs
+  "7960": FX losses
+
+# Account type (cost | control | revenue | equity | financial). Only `cost` accounts may be chosen by classification or a correction.
+types:
+  "1510": control
+  "1930": control
+  "2099": equity
+  "2440": control
+  "2611": control
+  "2614": control
+  "2640": control
+  "2645": control
+  "3001": revenue
+  "3740": revenue
+  "3960": revenue
+  "7960": financial
+  default: cost
+
+# Share of input VAT that may be reclaimed when this account is the cost line (default 1).
+# The non-deductible share is booked onto the cost line instead of 2640.
+input_vat_deductible:
+  "5820": "0.5"    # passenger-car hire: 50 % of input VAT is deductible (ML 8 kap. 15 §)
+  "6072": "0"      # client entertainment above the per-person cap: VAT not deductible

@@ -7,47 +7,31 @@ from itertools import combinations
 
 from rapidfuzz import fuzz
 
+from lovelight import confidence, knowledge
 from lovelight.ledger import to_sek
-from lovelight.models import BankTx, DocType, Document, Match
+from lovelight.models import BankTx, Confidence, DocType, Document, Match
 
-AMOUNT_TOLERANCE = 1  # SEK, absorbs öre rounding
+AMOUNT_TOLERANCE = 1  # SEK, absorbs rounding to whole kronor
 FX_TOLERANCE = 0.025  # non-SEK docs: card FX markup (~1.75 %) and bank FX spread
 DATE_WINDOW_DAYS = 10
 MIN_CONFIDENCE = 0.6
 MAX_SUBSET = 4
 MAX_SUBSET_POOL = 12
 
-# Bank texts are truncated/abbreviated; map known bank-text tokens to the vendor's legal name.
-ALIASES: dict[str, str] = {
-    "sl access": "storstockholms lokaltrafik",
-    "sl ": "storstockholms lokaltrafik",
-    "sj ab": "sj",
-    "aws emea": "amazon web services",
-    "amzn": "amazon",
-    "msft": "microsoft",
-    "google *": "google",
-    "goog": "google",
-    "kjell": "kjell & company",
-    "taxi sthlm": "taxi stockholm",
-    "skatteverket": "skatteverket",
-}
-
-
-def _norm(s: str) -> str:
-    s = s.lower()
-    s = re.sub(r"\b(ab|aktiebolag|inc|ltd|llc|gmbh|a/s|aps|as|oy|publ)\b", " ", s)
-    return re.sub(r"[^a-z0-9åäö& ]+", " ", s).strip()
 
 
 def _expand(text: str) -> str:
-    t = " " + text.lower() + " "
-    extra = [full for alias, full in ALIASES.items() if f" {alias}" in t]
-    return " ".join([text, *extra])
+    """Bank texts are truncated/abbreviated; add the KB vendor's name and aliases when a bank pattern matches."""
+    hit = knowledge.load().lookup(bank_text=text)
+    if not hit:
+        return text
+    entry = next(v for v in knowledge.load().vendors if v.id == hit.entry_id)
+    return " ".join([text, entry.name, *entry.aliases])
 
 
 def name_score(vendor: str, tx_text: str) -> float:
-    """0..1 similarity, robust to bank-side truncation ("STORSTOCKHOLMS LOK") and aliases ("SL ACCESS")."""
-    v, t = _norm(vendor), _norm(_expand(tx_text))
+    """0..1 similarity, robust to bank-side truncation and abbreviations known to the knowledge base."""
+    v, t = knowledge.normalize(vendor), knowledge.normalize(_expand(tx_text))
     if not v or not t:
         return 0.0
     return max(fuzz.token_set_ratio(v, t), fuzz.partial_ratio(v, t)) / 100
@@ -57,14 +41,14 @@ def _digits(s: str | None) -> str:
     return re.sub(r"\D", "", s or "")
 
 
-def _ref_tokens(tx: BankTx) -> set[str]:
+def ref_tokens(tx: BankTx) -> set[str]:
     parts = re.split(r"[;,]|\s+", f"{tx.reference or ''};{tx.text}")
     return {d for p in parts if len(d := _digits(p)) >= 4}
 
 
 def reference_hit(doc: Document, tx: BankTx) -> bool:
     e = doc.extraction
-    tokens = _ref_tokens(tx)
+    tokens = ref_tokens(tx)
     for ref in (e.ocr_reference, e.invoice_number):
         d = _digits(ref)
         if len(d) >= 4 and any(d == t or (len(d) >= 6 and d in t) for t in tokens):
@@ -72,68 +56,69 @@ def reference_hit(doc: Document, tx: BankTx) -> bool:
     return False
 
 
-def _tolerance(doc: Document) -> float:
+def tolerance(doc: Document) -> float:
     e = doc.extraction
     if e.currency.upper() == "SEK":
         return AMOUNT_TOLERANCE
     return max(AMOUNT_TOLERANCE, FX_TOLERANCE * abs(float(to_sek(e.gross, e.currency))))
 
 
-def _signed_sek(doc: Document) -> float:
+def signed_sek(doc: Document) -> float:
     e = doc.extraction
     gross = to_sek(e.gross, e.currency)
     return float(gross if e.doc_type == DocType.CUSTOMER_INVOICE else -gross)
 
 
-def _date_gap(doc: Document, tx: BankTx) -> int:
+def date_gap(doc: Document, tx: BankTx) -> int:
     e = doc.extraction
     return min(abs((tx.date - d).days) for d in (e.date, e.due_date) if d is not None)
 
 
-def score(doc: Document, tx: BankTx) -> tuple[float, str] | None:
-    expected = _signed_sek(doc)
+def eligible(doc: Document, tx: BankTx) -> str | None:
+    """Deterministic pairing rules; returns the method name, or None if the pair is not a candidate."""
+    expected = signed_sek(doc)
     if expected * float(tx.amount) <= 0:
         return None
-    amount_diff = abs(expected - float(tx.amount))
     name = name_score(doc.extraction.vendor, tx.text)
     ref = reference_hit(doc, tx)
-    if amount_diff > _tolerance(doc):
+    if abs(expected - float(tx.amount)) > tolerance(doc):
         # Partial payment: reference + payer name agree, amount is a fraction of the invoice.
         if ref and name >= 0.7 and abs(float(tx.amount)) < abs(expected):
-            return round(0.8 + 0.1 * name, 3), "ocr_reference+name (partial)"
+            return "ocr_reference+name (partial)"
         return None
-    gap = _date_gap(doc, tx)
     if ref:
-        return round(0.95 + 0.04 * name, 3), "ocr_reference+amount"
-    if gap > DATE_WINDOW_DAYS and name < 0.8:
+        return "ocr_reference+amount"
+    if date_gap(doc, tx) > DATE_WINDOW_DAYS and name < 0.8:
         return None
-    conf = 0.5
-    conf += 0.05 if amount_diff < 0.01 else 0.0
-    conf += 0.3 * max(0.0, (name - 0.5) / 0.5)
-    conf += 0.12 * max(0.0, 1 - gap / DATE_WINDOW_DAYS)
-    method = "amount+date+name" if name >= 0.8 else "amount+date"
-    return round(min(conf, 0.98), 3), method
+    return "amount+date+name" if name >= 0.8 else "amount+date"
+
+
+def _match(tx: BankTx, docs: list[Document], method: str, conf: Confidence | None = None) -> Match:
+    conf = conf or confidence.score_group(docs, tx)
+    return Match(id=f"m-{tx.id}", bank_tx_id=tx.id, document_ids=[d.id for d in docs], confidence=conf.score,
+                 method=method, confidence_detail=conf)
 
 
 def match(docs: list[Document], txs: list[BankTx]) -> list[Match]:
     docs = [d for d in docs if d.extraction is not None]
+    by_id = {d.id: d for d in docs}
+    tx_by_id = {t.id: t for t in txs}
     candidates = []
     for tx in txs:
         for d in docs:
-            s = score(d, tx)
-            if s and s[0] >= MIN_CONFIDENCE:
-                candidates.append((s[0], tx.id, d.id, s[1]))
+            if (method := eligible(d, tx)) and (c := confidence.score_match(d, tx)).score >= MIN_CONFIDENCE:
+                candidates.append((c.score, tx.id, d.id, method, c))
     candidates.sort(key=lambda c: (-c[0], c[1], c[2]))
 
     used_tx: set[str] = set()
     used_doc: set[str] = set()
     out: list[Match] = _multi_reference_matches(docs, txs, used_tx, used_doc)
-    for conf, tx_id, doc_id, method in candidates:
+    for _, tx_id, doc_id, method, conf in candidates:
         if tx_id in used_tx or doc_id in used_doc:
             continue
         used_tx.add(tx_id)
         used_doc.add(doc_id)
-        out.append(Match(id=f"m-{tx_id}", bank_tx_id=tx_id, document_ids=[doc_id], confidence=conf, method=method))
+        out.append(_match(tx_by_id[tx_id], [by_id[doc_id]], method, conf))
 
     out.extend(_subset_matches(docs, txs, used_tx, used_doc))
     return sorted(out, key=lambda m: m.id)
@@ -146,12 +131,11 @@ def _multi_reference_matches(docs: list[Document], txs: list[BankTx], used_tx: s
         hits = [d for d in docs if d.id not in used_doc and reference_hit(d, tx)]
         if len(hits) < 2:
             continue
-        total = sum(_signed_sek(d) for d in hits)
-        if abs(total - float(tx.amount)) <= sum(_tolerance(d) for d in hits):
+        total = sum(signed_sek(d) for d in hits)
+        if abs(total - float(tx.amount)) <= sum(tolerance(d) for d in hits):
             used_tx.add(tx.id)
             used_doc.update(d.id for d in hits)
-            out.append(Match(id=f"m-{tx.id}", bank_tx_id=tx.id, document_ids=sorted(d.id for d in hits),
-                             confidence=0.97, method=f"ocr_reference x{len(hits)}+amount"))
+            out.append(_match(tx, sorted(hits, key=lambda d: d.id), f"ocr_reference x{len(hits)}+amount"))
     return out
 
 
@@ -167,18 +151,14 @@ def _subset_matches(docs: list[Document], txs: list[BankTx], used_tx: set[str], 
         found = None
         for n in range(2, min(MAX_SUBSET, len(pool)) + 1):
             for combo in combinations(pool, n):
-                if abs(sum(_signed_sek(d) for d in combo) - float(tx.amount)) <= AMOUNT_TOLERANCE:
+                if abs(sum(signed_sek(d) for d in combo) - float(tx.amount)) <= AMOUNT_TOLERANCE:
                     found = combo
                     break
             if found:
                 break
         if not found:
             continue
-        ref = any(reference_hit(d, tx) for d in found)
         used_tx.add(tx.id)
         used_doc.update(d.id for d in found)
-        out.append(Match(
-            id=f"m-{tx.id}", bank_tx_id=tx.id, document_ids=[d.id for d in found],
-            confidence=0.96 if ref else 0.9, method=f"subset_sum({len(found)})+name",
-        ))
+        out.append(_match(tx, list(found), f"subset_sum({len(found)})+name"))
     return out

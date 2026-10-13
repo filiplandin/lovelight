@@ -23,3 +23,29 @@ jobs:
       - run: uv run pytest tests/ -q
         env:
           GMAIL_USER: ""
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Build image (no push)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          load: true
+          tags: lovelight:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Container becomes healthy and runs as non-root
+        run: |
+          docker run -d --name lovelight -p 8000:8000 lovelight:ci
+          for i in $(seq 1 30); do
+            curl -fsS http://127.0.0.1:8000/api/health && break
+            sleep 2
+          done
+          curl -fsS http://127.0.0.1:8000/api/health
+          test "$(docker exec lovelight id -u)" = "10001"
+      - if: failure()
+        run: docker logs lovelight

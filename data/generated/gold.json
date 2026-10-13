@@ -18,12 +18,35 @@
       "suggested_account": "5810",
       "description": "SL 30-dagarsbiljett, vuxen",
       "confidence": 0.97,
-      "injection_suspected": false
+      "injection_suspected": false,
+      "activity": "public_transport",
+      "vendor_profile": "Stockholm's public transport authority selling metro, bus and commuter-rail tickets.",
+      "account_candidates": [
+        {
+          "account": "5810",
+          "name": "",
+          "probability": 0.86,
+          "rationale": "Fits activity public_transport."
+        },
+        {
+          "account": "5800",
+          "name": "",
+          "probability": 0.09,
+          "rationale": "Plausible alternative."
+        },
+        {
+          "account": "6990",
+          "name": "",
+          "probability": 0.05,
+          "rationale": "Catch-all if nothing else fits."
+        }
+      ]
     },
     "expected_bank_tx_ids": [
       "BT001"
     ],
-    "anomalies": []
+    "anomalies": [],
+    "scenario": "standard"
   },
   "kvitto_sl_30dagar_okt.pdf": {
     "extraction": {
@@ -44,20 +67,43 @@
       "suggested_account": "5810",
       "description": "SL 30-dagarsbiljett, vuxen",
       "confidence": 0.97,
-      "injection_suspected": false
+      "injection_suspected": false,
+      "activity": "public_transport",
+      "vendor_profile": "Stockholm's public transport authority selling metro, bus and commuter-rail tickets.",
+      "account_candidates": [
+        {
+          "account": "5810",
+          "name": "",
+          "probability": 0.86,
+          "rationale": "Fits activity public_transport."
+        },
+        {
+          "account": "5800",
+          "name": "",
+          "probability": 0.09,
+          "rationale": "Plausible alternative."
+        },
+        {
+          "account": "6990",
+          "name": "",
+          "probability": 0.05,
+          "rationale": "Catch-all if nothing else fits."
+        }
+      ]
     },
     "expected_bank_tx_ids": [
       "BT022"
     ],
     "anomalies": [
       "vat_mismatch"
-    ]
+    ],
+    "scenario": "vat_mismatch"
   },
   "kvitto_taxi_stockholm_0917.pdf": {
     "extraction": {
       "doc_type": "receipt",
       "vendor": "Taxi Stockholm 15 00 00",
-      "vendor_org_nr": "556196-8836",
+      "vendor_org_nr": "556196-8834",
       "invoice_number": null,
       "date": "2026-09-17",
       "due_date": null,
@@ -72,18 +118,41 @@
       "suggested_account": "5800",
       "description": "Taxi Södermalm - Arlanda kundmöte",
       "confidence": 0.97,
-      "injection_suspected": false
+      "injection_suspected": false,
+      "activity": "local_transport",
+      "vendor_profile": "Stockholm taxi company selling taxi rides.",
+      "account_candidates": [
+        {
+          "account": "5800",
+          "name": "",
+          "probability": 0.86,
+          "rationale": "Fits activity local_transport."
+        },
+        {
+          "account": "5810",
+          "name": "",
+          "probability": 0.09,
+          "rationale": "Plausible alternative."
+        },
+        {
+          "account": "6990",
+          "name": "",
+          "probability": 0.05,
+          "rationale": "Catch-all if nothing else fits."
+        }
+      ]
     },
     "expected_bank_tx_ids": [
       "BT009"
     ],
-    "anomalies": []
+    "anomalies": [],
+    "scenario": "standard"
   },
   "IMG_4471.png": {
     "extraction": {
       "doc_type": "receipt",
       "vendor": "Restaurang Pelikan",
-      "vendor_org_nr": "556234-1187",
+      "vendor_org_nr": "556234-1189",
       "invoice_number": null,
       "date": "2026-09-23",
       "due_date": null,
@@ -98,12 +167,35 @@
       "suggested_account": "6071",
       "description": "Kundlunch 4 pers, projekt Nordic Rail",
       "confidence": 0.9,
-      "injection_suspected": false
+      "injection_suspected": false,
+      "activity": "client_entertainment",
+      "vendor_profile": "Restaurant serving traditional Swedish food.",
+      "account_candidates": [
+        {
+          "account": "6071",
+          "name": "",
+          "probability": 0.86,
+          "rationale": "Fits activity client_entertainment."
+        },
+        {
+          "account": "6072",
+          "name": "",
+          "probability": 0.09,
+          "rationale": "Plausible alternative."
+        },
+        {
+          "account": "6990",
+          "name": "",
+          "probability": 0.05,
+          "rationale": "Catch-all if nothing else fits."
+        }
+      ]
     },
     "expected_bank_tx_ids": [
       "BT011"
     ],
-    "anomalies": []
+    "anomalies": [],
+    "scenario": "standard"
   },
   "IMG_4502.png": {
     "extraction": {
@@ -124,18 +216,41 @@
       "suggested_account": "5410",
       "description": "Förlängningskablar och HDMI-adapter",
       "confidence": 0.9,
-      "injection_suspected": false
+      "injection_suspected": false,
+      "activity": "equipment",
+      "vendor_profile": "Hardware and home-electronics retailer.",
+      "account_candidates": [
+        {
+          "account": "5410",
+          "name": "",
+          "probability": 0.86,
+          "rationale": "Fits activity equipment."
+        },
+        {
+          "account": "6110",
+          "name": "",
+          "probability": 0.09,
+          "rationale": "Plausible alternative."
+        },
+        {
+          "account": "5420",
+          "name": "",
+          "probability": 0.05,
+          "rationale": "Catch-all if nothing else fits."
+        }
+      ]
     },
     "expected_bank_tx_ids": [
       "BT019"
     ],
-    "anomalies": []
+    "anomalies": [],
+    "scenario": "standard"
   },
   "IMG_4538.png": {
     "extraction": {
       "doc_type": "receipt",
       "vendor": "Espresso House",
-      "vendor_org_nr": "556524-1563",
+      "vendor_org_nr": "556524-1568",
       "invoice_number": null,
       "date": "2026-10-06",
       "due_date": null,
@@ -150,12 +265,35 @@
       "suggested_account": "6071",
       "description": "Fika workshop med kund",
       "confidence": 0.9,
-      "injection_suspected": false
+      "injection_suspected": false,
+      "activity": "client_entertainment",
+      "vendor_profile": "Coffee-shop chain.",
+      "account_candidates": [
+        {
+          "account": "6071",
+          "name": "",
+          "probability": 0.86,
+          "rationale": "Fits activity client_entertainment."
+        },
+        {
+          "account": "6072",
+          "name": "",
+          "probability": 0.09,
+          "rationale": "Plausible alternative."
+        },
+        {
+          "account": "6990",
+          "name": "",
+          "probability": 0.05,
+          "rationale": "Catch-all if nothing else fits."
+        }
+      ]
     },
     "expected_bank_tx_ids": [
-      "BT027"
+      "BT028"
     ],
-    "anomalies": []
+    "anomalies": [],
+    "scenario": "standard"
   },
   "adobe_invoice_IE52011893.pdf": {
     "extraction": {
@@ -176,12 +314,35 @@
       "suggested_account": "5420",
       "description": "Creative Cloud for teams, 1 licens (omvänd skattskyldighet)",
       "confidence": 0.97,
-      "injection_suspected": false
+      "injection_suspected": false,
+      "activity": "software_subscription",
+      "vendor_profile": "Creative software sold as subscriptions.",
+      "account_candidates": [
+        {
+          "account": "5420",
+          "name": "",
+          "probability": 0.86,
+          "rationale": "Fits activity software_subscription."
+        },
+        {
+          "account": "6540",
+          "name": "",
+          "probability": 0.09,
+          "rationale": "Plausible alternative."
+        },
+        {
+          "account": "6990",
+          "name": "",
+          "probability": 0.05,
+          "rationale": "Catch-all if nothing else fits."
+        }
+      ]
     },
     "expected_bank_tx_ids": [
       "BT006"
     ],
-    "anomalies": []
+    "anomalies": [],
+    "scenario": "standard"
   },
   "figma_receipt_2026-10.pdf": {
     "extraction": {
@@ -202,12 +363,35 @@
       "suggested_account": "5420",
       "description": "Figma Professional, 12 editors (omvänd skattskyldighet)",
       "confidence": 0.97,
-      "injection_suspected": false
+      "injection_suspected": false,
+      "activity": "software_subscription",
+      "vendor_profile": "Collaborative design software sold per editor seat.",
+      "account_candidates": [
+        {
+          "account": "5420",
+          "name": "",
+          "probability": 0.86,
+          "rationale": "Fits activity software_subscription."
+        },
+        {
+          "account": "6540",
+          "name": "",
+          "probability": 0.09,
+          "rationale": "Plausible alternative."
+        },
+        {
+          "account": "6990",
+          "name": "",
+          "probability": 0.05,
+          "rationale": "Catch-all if nothing else fits."
+        }
+      ]
     },
     "expected_bank_tx_ids": [
       "BT021"
     ],
-    "anomalies": []
+    "anomalies": [],
+    "scenario": "standard"
   },
   "sj_biljett_STO-GBG_1008.pdf": {
     "extraction": {
@@ -228,18 +412,41 @@
       "suggested_account": "5810",
       "description": "Tåg Stockholm C - Göteborg C t/r, kundpresentation",
       "confidence": 0.97,
-      "injection_suspected": false
+      "injection_suspected": false,
+      "activity": "public_transport",
+      "vendor_profile": "Swedish rail operator selling train tickets.",
+      "account_candidates": [
+        {
+          "account": "5810",
+          "name": "",
+          "probability": 0.86,
+          "rationale": "Fits activity public_transport."
+        },
+        {
+          "account": "5800",
+          "name": "",
+          "probability": 0.09,
+          "rationale": "Plausible alternative."
+        },
+        {
+          "account": "6990",
+          "name": "",
+          "probability": 0.05,
+          "rationale": "Catch-all if nothing else fits."
+        }
+      ]
     },
     "expected_bank_tx_ids": [
-      "BT029"
+      "BT032"
     ],
-    "anomalies": []
+    "anomalies": [],
+    "scenario": "standard"
   },
   "kvitto_kjell_0911.pdf": {
     "extraction": {
       "doc_type": "receipt",
       "vendor": "Kjell & Company",
-      "vendor_org_nr": "556552-2786",
+      "vendor_org_nr": "556552-2785",
       "invoice_number": null,
       "date": "2026-09-11",
       "due_date": null,
@@ -254,18 +461,41 @@
       "suggested_account": "5410",
       "description": "USB-C hubb till konferensrum",
       "confidence": 0.97,
-      "injection_suspected": false
+      "injection_suspected": false,
+      "activity": "equipment",
+      "vendor_profile": "Electronics accessories retailer.",
+      "account_candidates": [
+        {
+          "account": "5410",
+          "name": "",
+          "probability": 0.86,
+          "rationale": "Fits activity equipment."
+        },
+        {
+          "account": "6110",
+          "name": "",
+          "probability": 0.09,
+          "rationale": "Plausible alternative."
+        },
+        {
+          "account": "5420",
+          "name": "",
+          "probability": 0.05,
+          "rationale": "Catch-all if nothing else fits."
+        }
+      ]
     },
     "expected_bank_tx_ids": [
       "BT004"
     ],
-    "anomalies": []
+    "anomalies": [],
+    "scenario": "standard"
   },
   "kvitto_easypark_1002.pdf": {
     "extraction": {
       "doc_type": "receipt",
       "vendor": "EasyPark AB",
-      "vendor_org_nr": "556672-6046",
+      "vendor_org_nr": "556672-6047",
       "invoice_number": null,
       "date": "2026-10-02",
       "due_date": null,
@@ -280,12 +510,35 @@
       "suggested_account": "5800",
       "description": "Parkering vid kundbesök Solna",
       "confidence": 0.97,
-      "injection_suspected": false
+      "injection_suspected": false,
+      "activity": "parking",
+      "vendor_profile": "Parking payment app.",
+      "account_candidates": [
+        {
+          "account": "5800",
+          "name": "",
+          "probability": 0.86,
+          "rationale": "Fits activity parking."
+        },
+        {
+          "account": "5810",
+          "name": "",
+          "probability": 0.09,
+          "rationale": "Plausible alternative."
+        },
+        {
+          "account": "6990",
+          "name": "",
+          "probability": 0.05,
+          "rationale": "Catch-all if nothing else fits."
+        }
+      ]
     },
     "expected_bank_tx_ids": [
       "BT024"
     ],
-    "anomalies": []
+    "anomalies": [],
+    "scenario": "standard"
   },
   "uber_receipt_0915.eml": {
     "extraction": {
@@ -306,12 +559,35 @@
       "suggested_account": "5800",
       "description": "Taxiresa Hornsgatan 54 → Sveavägen 44",
       "confidence": 0.95,
-      "injection_suspected": false
+      "injection_suspected": false,
+      "activity": "local_transport",
+      "vendor_profile": "Ride-hailing platform.",
+      "account_candidates": [
+        {
+          "account": "5800",
+          "name": "",
+          "probability": 0.86,
+          "rationale": "Fits activity local_transport."
+        },
+        {
+          "account": "5810",
+          "name": "",
+          "probability": 0.09,
+          "rationale": "Plausible alternative."
+        },
+        {
+          "account": "6990",
+          "name": "",
+          "probability": 0.05,
+          "rationale": "Catch-all if nothing else fits."
+        }
+      ]
     },
     "expected_bank_tx_ids": [
       "BT007"
     ],
-    "anomalies": []
+    "anomalies": [],
+    "scenario": "standard"
   },
   "bolt_receipt_0926.eml": {
     "extraction": {
@@ -332,12 +608,35 @@
       "suggested_account": "5800",
       "description": "Taxiresa Slussen → Hornsgatan 54",
       "confidence": 0.95,
-      "injection_suspected": false
+      "injection_suspected": false,
+      "activity": "local_transport",
+      "vendor_profile": "Ride-hailing and e-scooter app.",
+      "account_candidates": [
+        {
+          "account": "5800",
+          "name": "",
+          "probability": 0.86,
+          "rationale": "Fits activity local_transport."
+        },
+        {
+          "account": "5810",
+          "name": "",
+          "probability": 0.09,
+          "rationale": "Plausible alternative."
+        },
+        {
+          "account": "6990",
+          "name": "",
+          "probability": 0.05,
+          "rationale": "Catch-all if nothing else fits."
+        }
+      ]
     },
     "expected_bank_tx_ids": [
       "BT013"
     ],
-    "anomalies": []
+    "anomalies": [],
+    "scenario": "standard"
   },
   "uber_receipt_1009.eml": {
     "extraction": {
@@ -358,18 +657,41 @@
       "suggested_account": "5800",
       "description": "Taxiresa Stockholm C → Hammarby Sjöstad",
       "confidence": 0.95,
-      "injection_suspected": false
+      "injection_suspected": false,
+      "activity": "local_transport",
+      "vendor_profile": "Ride-hailing platform.",
+      "account_candidates": [
+        {
+          "account": "5800",
+          "name": "",
+          "probability": 0.86,
+          "rationale": "Fits activity local_transport."
+        },
+        {
+          "account": "5810",
+          "name": "",
+          "probability": 0.09,
+          "rationale": "Plausible alternative."
+        },
+        {
+          "account": "6990",
+          "name": "",
+          "probability": 0.05,
+          "rationale": "Catch-all if nothing else fits."
+        }
+      ]
     },
     "expected_bank_tx_ids": [
-      "BT031"
+      "BT034"
     ],
-    "anomalies": []
+    "anomalies": [],
+    "scenario": "standard"
   },
   "faktura_ringvagen_hyra_sep.pdf": {
     "extraction": {
       "doc_type": "supplier_invoice",
       "vendor": "Fastighets AB Ringvägen",
-      "vendor_org_nr": "556788-1290",
+      "vendor_org_nr": "556788-1296",
       "invoice_number": "H-2026-0917",
       "date": "2026-08-25",
       "due_date": "2026-09-30",
@@ -384,18 +706,41 @@
       "suggested_account": "5010",
       "description": "Lokalhyra september 2026",
       "confidence": 0.98,
-      "injection_suspected": false
+      "injection_suspected": false,
+      "activity": "rent",
+      "vendor_profile": "Commercial landlord renting out office premises.",
+      "account_candidates": [
+        {
+          "account": "5010",
+          "name": "",
+          "probability": 0.86,
+          "rationale": "Fits activity rent."
+        },
+        {
+          "account": "6990",
+          "name": "",
+          "probability": 0.09,
+          "rationale": "Plausible alternative."
+        },
+        {
+          "account": "5060",
+          "name": "",
+          "probability": 0.05,
+          "rationale": "Catch-all if nothing else fits."
+        }
+      ]
     },
     "expected_bank_tx_ids": [
       "BT016"
     ],
-    "anomalies": []
+    "anomalies": [],
+    "scenario": "standard"
   },
   "faktura_ringvagen_hyra_okt.pdf": {
     "extraction": {
       "doc_type": "supplier_invoice",
       "vendor": "Fastighets AB Ringvägen",
-      "vendor_org_nr": "556788-1290",
+      "vendor_org_nr": "556788-1296",
       "invoice_number": "H-2026-1017",
       "date": "2026-09-25",
       "due_date": "2026-10-31",
@@ -404,18 +749,41 @@
       "vat_rate": "0.25",
       "vat": "11250.00",
       "gross": "56250.00",
-      "bankgiro": "5916-4482",
+      "bankgiro": "5916-4483",
       "iban": null,
       "ocr_reference": "1392377204",
       "suggested_account": "5010",
       "description": "Lokalhyra oktober 2026",
       "confidence": 0.98,
-      "injection_suspected": false
+      "injection_suspected": false,
+      "activity": "rent",
+      "vendor_profile": "Commercial landlord renting out office premises.",
+      "account_candidates": [
+        {
+          "account": "5010",
+          "name": "",
+          "probability": 0.86,
+          "rationale": "Fits activity rent."
+        },
+        {
+          "account": "6990",
+          "name": "",
+          "probability": 0.09,
+          "rationale": "Plausible alternative."
+        },
+        {
+          "account": "5060",
+          "name": "",
+          "probability": 0.05,
+          "rationale": "Catch-all if nothing else fits."
+        }
+      ]
     },
     "expected_bank_tx_ids": [],
     "anomalies": [
       "iban_change"
-    ]
+    ],
+    "scenario": "iban_change"
   },
   "telia_faktura_88213456.pdf": {
     "extraction": {
@@ -436,18 +804,41 @@
       "suggested_account": "6212",
       "description": "Mobil och bredband september",
       "confidence": 0.98,
-      "injection_suspected": false
+      "injection_suspected": false,
+      "activity": "telecom",
+      "vendor_profile": "Telecom operator selling mobile and broadband subscriptions.",
+      "account_candidates": [
+        {
+          "account": "6212",
+          "name": "",
+          "probability": 0.86,
+          "rationale": "Fits activity telecom."
+        },
+        {
+          "account": "6230",
+          "name": "",
+          "probability": 0.09,
+          "rationale": "Plausible alternative."
+        },
+        {
+          "account": "6540",
+          "name": "",
+          "probability": 0.05,
+          "rationale": "Catch-all if nothing else fits."
+        }
+      ]
     },
     "expected_bank_tx_ids": [
       "BT014"
     ],
-    "anomalies": []
+    "anomalies": [],
+    "scenario": "standard"
   },
   "faktura_nordstrom_illustration_2026-14.pdf": {
     "extraction": {
       "doc_type": "supplier_invoice",
       "vendor": "Nordström Illustration",
-      "vendor_org_nr": "850312-4471",
+      "vendor_org_nr": "850312-4474",
       "invoice_number": "2026-14",
       "date": "2026-09-10",
       "due_date": "2026-10-10",
@@ -456,18 +847,41 @@
       "vat_rate": "0.25",
       "vat": "7000.00",
       "gross": "35000.00",
-      "bankgiro": "5432-1098",
+      "bankgiro": "5432-1096",
       "iban": null,
       "ocr_reference": "7987767634",
       "suggested_account": "6550",
       "description": "Underkonsult illustration",
       "confidence": 0.98,
-      "injection_suspected": false
+      "injection_suspected": false,
+      "activity": "consulting",
+      "vendor_profile": "Freelance illustrator.",
+      "account_candidates": [
+        {
+          "account": "6550",
+          "name": "",
+          "probability": 0.86,
+          "rationale": "Fits activity consulting."
+        },
+        {
+          "account": "6540",
+          "name": "",
+          "probability": 0.09,
+          "rationale": "Plausible alternative."
+        },
+        {
+          "account": "6990",
+          "name": "",
+          "probability": 0.05,
+          "rationale": "Catch-all if nothing else fits."
+        }
+      ]
     },
     "expected_bank_tx_ids": [
-      "BT028"
+      "BT031"
     ],
-    "anomalies": []
+    "anomalies": [],
+    "scenario": "standard"
   },
   "fortnox_faktura_4471.pdf": {
     "extraction": {
@@ -482,24 +896,47 @@
       "vat_rate": "0.25",
       "vat": "374.75",
       "gross": "1873.75",
-      "bankgiro": "5323-4505",
+      "bankgiro": "5323-4506",
       "iban": null,
       "ocr_reference": "4026319071",
       "suggested_account": "5420",
       "description": "Bokföringsprogram september",
       "confidence": 0.98,
-      "injection_suspected": false
+      "injection_suspected": false,
+      "activity": "software_subscription",
+      "vendor_profile": "Cloud bookkeeping and payroll software.",
+      "account_candidates": [
+        {
+          "account": "5420",
+          "name": "",
+          "probability": 0.86,
+          "rationale": "Fits activity software_subscription."
+        },
+        {
+          "account": "6540",
+          "name": "",
+          "probability": 0.09,
+          "rationale": "Plausible alternative."
+        },
+        {
+          "account": "6990",
+          "name": "",
+          "probability": 0.05,
+          "rationale": "Catch-all if nothing else fits."
+        }
+      ]
     },
     "expected_bank_tx_ids": [
       "BT014"
     ],
-    "anomalies": []
+    "anomalies": [],
+    "scenario": "standard"
   },
   "ljungbergs_faktura_30412.pdf": {
     "extraction": {
       "doc_type": "supplier_invoice",
       "vendor": "Ljungbergs Tryckeri AB",
-      "vendor_org_nr": "556123-9874",
+      "vendor_org_nr": "556123-9871",
       "invoice_number": "30412",
       "date": "2026-09-12",
       "due_date": "2026-10-12",
@@ -508,24 +945,47 @@
       "vat_rate": "0.25",
       "vat": "3100.00",
       "gross": "15500.00",
-      "bankgiro": "5791-2236",
+      "bankgiro": "5791-2230",
       "iban": null,
       "ocr_reference": "1787280609",
       "suggested_account": "4010",
       "description": "Tryck kundprojekt Nordic Rail",
       "confidence": 0.98,
-      "injection_suspected": false
+      "injection_suspected": false,
+      "activity": "printing_materials",
+      "vendor_profile": "Commercial print shop.",
+      "account_candidates": [
+        {
+          "account": "4010",
+          "name": "",
+          "probability": 0.86,
+          "rationale": "Fits activity printing_materials."
+        },
+        {
+          "account": "5910",
+          "name": "",
+          "probability": 0.09,
+          "rationale": "Plausible alternative."
+        },
+        {
+          "account": "6110",
+          "name": "",
+          "probability": 0.05,
+          "rationale": "Catch-all if nothing else fits."
+        }
+      ]
     },
     "expected_bank_tx_ids": [
-      "BT033"
+      "BT036"
     ],
-    "anomalies": []
+    "anomalies": [],
+    "scenario": "standard"
   },
   "ljungbergs_faktura_30519.pdf": {
     "extraction": {
       "doc_type": "supplier_invoice",
       "vendor": "Ljungbergs Tryckeri AB",
-      "vendor_org_nr": "556123-9874",
+      "vendor_org_nr": "556123-9871",
       "invoice_number": "30519",
       "date": "2026-10-05",
       "due_date": "2026-11-04",
@@ -534,24 +994,47 @@
       "vat_rate": "0.25",
       "vat": "3100.00",
       "gross": "15500.00",
-      "bankgiro": "5791-2236",
+      "bankgiro": "5791-2230",
       "iban": null,
       "ocr_reference": "6353307140",
       "suggested_account": "4010",
       "description": "Tryck kundprojekt Nordic Rail",
       "confidence": 0.98,
-      "injection_suspected": false
+      "injection_suspected": false,
+      "activity": "printing_materials",
+      "vendor_profile": "Commercial print shop.",
+      "account_candidates": [
+        {
+          "account": "4010",
+          "name": "",
+          "probability": 0.86,
+          "rationale": "Fits activity printing_materials."
+        },
+        {
+          "account": "5910",
+          "name": "",
+          "probability": 0.09,
+          "rationale": "Plausible alternative."
+        },
+        {
+          "account": "6110",
+          "name": "",
+          "probability": 0.05,
+          "rationale": "Catch-all if nothing else fits."
+        }
+      ]
     },
     "expected_bank_tx_ids": [],
     "anomalies": [
       "duplicate"
-    ]
+    ],
+    "scenario": "duplicate"
   },
   "faktura_stadbolaget_kvist_1042.pdf": {
     "extraction": {
       "doc_type": "supplier_invoice",
       "vendor": "Städbolaget Kvist AB",
-      "vendor_org_nr": "559012-3345",
+      "vendor_org_nr": "559012-3344",
       "invoice_number": "1042",
       "date": "2026-09-03",
       "due_date": "2026-09-30",
@@ -560,24 +1043,47 @@
       "vat_rate": "0.25",
       "vat": "800.00",
       "gross": "4000.00",
-      "bankgiro": "5121-8870",
+      "bankgiro": "5121-8873",
       "iban": null,
       "ocr_reference": "0342872850",
       "suggested_account": "5060",
       "description": "Städning september",
       "confidence": 0.98,
-      "injection_suspected": false
+      "injection_suspected": false,
+      "activity": "cleaning",
+      "vendor_profile": "Office cleaning company.",
+      "account_candidates": [
+        {
+          "account": "5060",
+          "name": "",
+          "probability": 0.86,
+          "rationale": "Fits activity cleaning."
+        },
+        {
+          "account": "6990",
+          "name": "",
+          "probability": 0.09,
+          "rationale": "Plausible alternative."
+        },
+        {
+          "account": "5010",
+          "name": "",
+          "probability": 0.05,
+          "rationale": "Catch-all if nothing else fits."
+        }
+      ]
     },
     "expected_bank_tx_ids": [
       "BT014"
     ],
-    "anomalies": []
+    "anomalies": [],
+    "scenario": "standard"
   },
   "faktura_nordic_growth_partners_7781.pdf": {
     "extraction": {
       "doc_type": "supplier_invoice",
       "vendor": "Nordic Growth Partners AB",
-      "vendor_org_nr": "559301-7712",
+      "vendor_org_nr": "559301-7717",
       "invoice_number": "7781",
       "date": "2026-10-08",
       "due_date": "2026-10-18",
@@ -586,17 +1092,187 @@
       "vat_rate": "0.25",
       "vat": "1750.00",
       "gross": "8750.00",
-      "bankgiro": "5933-1120",
+      "bankgiro": "5933-1124",
       "iban": null,
       "ocr_reference": "6218890736",
       "suggested_account": "6550",
       "description": "Konsulttjänster strategi",
       "confidence": 0.98,
-      "injection_suspected": true
+      "injection_suspected": true,
+      "activity": "consulting",
+      "vendor_profile": "Strategy consultancy.",
+      "account_candidates": [
+        {
+          "account": "6550",
+          "name": "",
+          "probability": 0.86,
+          "rationale": "Fits activity consulting."
+        },
+        {
+          "account": "6540",
+          "name": "",
+          "probability": 0.09,
+          "rationale": "Plausible alternative."
+        },
+        {
+          "account": "6990",
+          "name": "",
+          "probability": 0.05,
+          "rationale": "Catch-all if nothing else fits."
+        }
+      ]
     },
     "expected_bank_tx_ids": [],
     "anomalies": [
       "injection"
-    ]
+    ],
+    "scenario": "injection"
+  },
+  "kvitto_svepa_1005.pdf": {
+    "extraction": {
+      "doc_type": "receipt",
+      "vendor": "Svepa Mobility AB",
+      "vendor_org_nr": "559412-7739",
+      "invoice_number": null,
+      "date": "2026-10-05",
+      "due_date": null,
+      "currency": "SEK",
+      "net": "49.60",
+      "vat_rate": "0.25",
+      "vat": "12.40",
+      "gross": "62.00",
+      "bankgiro": null,
+      "iban": null,
+      "ocr_reference": null,
+      "suggested_account": "5800",
+      "description": "Elsparkcykel Hornsgatan - kundmöte Slussen",
+      "confidence": 0.97,
+      "injection_suspected": false,
+      "activity": "local_transport",
+      "vendor_profile": "Shared e-scooter operator charging per unlock and per minute.",
+      "account_candidates": [
+        {
+          "account": "5800",
+          "name": "",
+          "probability": 0.86,
+          "rationale": "Fits activity local_transport."
+        },
+        {
+          "account": "5810",
+          "name": "",
+          "probability": 0.09,
+          "rationale": "Plausible alternative."
+        },
+        {
+          "account": "6990",
+          "name": "",
+          "probability": 0.05,
+          "rationale": "Catch-all if nothing else fits."
+        }
+      ]
+    },
+    "expected_bank_tx_ids": [
+      "BT029"
+    ],
+    "anomalies": [],
+    "scenario": "micromobility"
+  },
+  "kvitto_trampa_1007.pdf": {
+    "extraction": {
+      "doc_type": "receipt",
+      "vendor": "Trampa Cykeldelning AB",
+      "vendor_org_nr": "559388-2151",
+      "invoice_number": null,
+      "date": "2026-10-07",
+      "due_date": null,
+      "currency": "SEK",
+      "net": "36.00",
+      "vat_rate": "0.25",
+      "vat": "9.00",
+      "gross": "45.00",
+      "bankgiro": null,
+      "iban": null,
+      "ocr_reference": null,
+      "suggested_account": "5800",
+      "description": "Hyrcykel till workshop Södermalm",
+      "confidence": 0.97,
+      "injection_suspected": false,
+      "activity": "local_transport",
+      "vendor_profile": "Bike-share operator renting bikes by the trip.",
+      "account_candidates": [
+        {
+          "account": "5800",
+          "name": "",
+          "probability": 0.86,
+          "rationale": "Fits activity local_transport."
+        },
+        {
+          "account": "5810",
+          "name": "",
+          "probability": 0.09,
+          "rationale": "Plausible alternative."
+        },
+        {
+          "account": "6990",
+          "name": "",
+          "probability": 0.05,
+          "rationale": "Catch-all if nothing else fits."
+        }
+      ]
+    },
+    "expected_bank_tx_ids": [
+      "BT030"
+    ],
+    "anomalies": [],
+    "scenario": "bike_share"
+  },
+  "kvitto_nordvik_pendel_1006.pdf": {
+    "extraction": {
+      "doc_type": "receipt",
+      "vendor": "Nordvik Pendel AB",
+      "vendor_org_nr": "559205-6617",
+      "invoice_number": null,
+      "date": "2026-10-06",
+      "due_date": null,
+      "currency": "SEK",
+      "net": "90.57",
+      "vat_rate": "0.06",
+      "vat": "5.43",
+      "gross": "96.00",
+      "bankgiro": null,
+      "iban": null,
+      "ocr_reference": null,
+      "suggested_account": "5810",
+      "description": "Pendeltåg enkelbiljett, kundbesök Södertälje",
+      "confidence": 0.97,
+      "injection_suspected": false,
+      "activity": "public_transport",
+      "vendor_profile": "Regional commuter-rail operator selling tickets and passes.",
+      "account_candidates": [
+        {
+          "account": "5810",
+          "name": "",
+          "probability": 0.86,
+          "rationale": "Fits activity public_transport."
+        },
+        {
+          "account": "5800",
+          "name": "",
+          "probability": 0.09,
+          "rationale": "Plausible alternative."
+        },
+        {
+          "account": "6990",
+          "name": "",
+          "probability": 0.05,
+          "rationale": "Catch-all if nothing else fits."
+        }
+      ]
+    },
+    "expected_bank_tx_ids": [
+      "BT027"
+    ],
+    "anomalies": [],
+    "scenario": "public_transport"
   }
 }

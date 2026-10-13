@@ -6,6 +6,7 @@ asserts the invariants the 3-minute demo relies on.
 
 import asyncio
 import csv
+import json
 from decimal import Decimal
 
 import pytest
@@ -14,7 +15,7 @@ from fastapi.testclient import TestClient
 from lovelight import pipeline
 
 PLANTED_DOC_KINDS = {"injection", "iban_change", "duplicate", "vat_mismatch", "missing_receipt"}
-INBOX_DOCS = 23
+INBOX_DOCS = len(json.loads((pipeline.GENERATED / "gold.json").read_text()))
 
 
 def _replay(server) -> None:
@@ -136,7 +137,10 @@ def _assert_books_balance(state) -> None:
 def test_approve_all_round_trip(demo):
     client = demo["client"]
     before = client.get("/api/state").json()
-    pending = [m for m in before["matches"] if not m["approved"] and m["confidence"] >= pipeline.AUTO_APPROVE_MATCH]
+    pending = [
+        m for m in before["matches"]
+        if not m["approved"] and m["confidence"] >= pipeline.AUTO_APPROVE_MATCH and not m["blocked_by"]
+    ]
     q = pipeline.subscribe()
     try:
         r = client.post("/api/matches/approve-all")
@@ -148,8 +152,13 @@ def test_approve_all_round_trip(demo):
     if pending:
         assert "match.approved" in events, events
     after = client.get("/api/state").json()
-    high = [m for m in after["matches"] if m["confidence"] >= pipeline.AUTO_APPROVE_MATCH]
+    high = [m for m in after["matches"] if m["confidence"] >= pipeline.AUTO_APPROVE_MATCH and not m["blocked_by"]]
     assert high and all(m["approved"] for m in high)
+    # a payment never posts against a document that is not itself in the books
+    blocked = [m for m in after["matches"] if m["blocked_by"]]
+    assert not any(m["approved"] for m in blocked)
+    in_review = {d["id"] for d in after["documents"] if d["status"] in ("needs_review", "quarantined")}
+    assert not any(v["bank_tx_id"] and v["document_id"] in in_review for v in after["vouchers"])
     _assert_books_balance(after)
     payment_doc_ids = {v["document_id"] for v in after["vouchers"] if v["status"] == "posted"}
     assert any(d in payment_doc_ids for m in high for d in m["document_ids"])

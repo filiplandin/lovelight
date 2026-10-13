@@ -9,12 +9,14 @@ from lovelight.models import Voucher
 
 ACCOUNT_NAMES = {
     "1510": "Kundfordringar", "1930": "Företagskonto", "2440": "Leverantörsskulder",
-    "2611": "Utgående moms 25 %", "2640": "Ingående moms", "2099": "Årets resultat",
+    "2611": "Utgående moms 25 %", "2614": "Utgående moms omvänd skattskyldighet 25 %",
+    "2640": "Ingående moms", "2645": "Beräknad ingående moms på förvärv från utlandet", "2099": "Årets resultat",
     "3001": "Försäljning inom Sverige 25 %", "3740": "Öres- och kronutjämning", "3960": "Valutakursvinster",
     "4010": "Inköp material och varor", "5010": "Lokalhyra", "5410": "Förbrukningsinventarier",
-    "5420": "Programvaror", "5460": "Förbrukningsmaterial", "5611": "Drivmedel för personbilar",
-    "5800": "Resekostnader", "5810": "Biljetter", "5831": "Kost och logi i Sverige", "5910": "Annonsering",
-    "6071": "Representation, avdragsgill", "6110": "Kontorsmateriel", "6212": "Mobiltelefon",
+    "5060": "Städning och renhållning", "5420": "Programvaror", "5460": "Förbrukningsmaterial", "5611": "Drivmedel för personbilar",
+    "5800": "Resekostnader", "5810": "Biljetter", "5820": "Hyrbilskostnader", "5831": "Kost och logi i Sverige", "5910": "Annonsering",
+    "6071": "Representation, avdragsgill", "6072": "Representation, ej avdragsgill",
+    "6110": "Kontorsmateriel", "6212": "Mobiltelefon",
     "6230": "Datakommunikation", "6250": "Postbefordran", "6530": "Redovisningstjänster",
     "6540": "IT-tjänster", "6550": "Konsultarvoden", "6570": "Bankkostnader", "6990": "Övriga externa kostnader",
     "7960": "Valutakursförluster",

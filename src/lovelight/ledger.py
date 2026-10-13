@@ -2,10 +2,15 @@
 
 from __future__ import annotations
 
+import re
 from collections import defaultdict
 from decimal import ROUND_HALF_UP, Decimal
+from typing import TYPE_CHECKING
 
 from lovelight.models import BankTx, DocType, Document, Match, Voucher, VoucherLine
+
+if TYPE_CHECKING:
+    from lovelight.knowledge import KnowledgeBase
 
 # Fixed demo rates (SEK per unit). FX revaluation is out of scope.
 FX_TO_SEK: dict[str, Decimal] = {
@@ -22,6 +27,12 @@ AR = "1510"
 AP = "2440"
 INPUT_VAT = "2640"
 OUTPUT_VAT = "2611"
+RC_OUTPUT_VAT = "2614"  # output VAT, reverse charge (self-assessed on purchases from abroad)
+RC_INPUT_VAT = "2645"  # input VAT on purchases from abroad
+RC_RATE = Decimal("0.25")
+EU_COUNTRIES = frozenset(
+    "AT BE BG CY CZ DE DK EE ES FI FR GR EL HR HU IE IT LT LU LV MT NL PL PT RO SI SK".split()
+)  # Sweden excluded: a Swedish supplier never triggers reverse charge on services
 SALES = "3001"
 ROUNDING = "3740"
 FX_GAIN = "3960"
@@ -64,20 +75,66 @@ def _compact(entries: list[tuple[str, Decimal]]) -> list[VoucherLine]:
     return [_line(a, to_ore(x)) for a, x in entries if to_ore(x) != 0]
 
 
-def propose_voucher(doc: Document, number: int, model: str | None, prompt_version: str | None) -> Voucher:
+def reverse_charge_region(doc: Document, kb: KnowledgeBase) -> str | None:
+    """'eu' | 'non_eu' | 'unknown' for a 0 % purchase under an activity that self-assesses VAT, else None.
+
+    Country comes from the supplier's VAT id prefix, then its IBAN, then the knowledge-base vendor entry.
+    Currency is never used: an Irish entity may bill in USD and a US entity in EUR.
+    """
+    e = doc.extraction
+    activity = (doc.classification.activity if doc.classification else None) or e.activity
+    act = kb.activities.get(activity) if activity else None
+    if e.doc_type == DocType.CUSTOMER_INVOICE or e.vat_rate != 0 or not (act and act.reverse_charge_when_zero):
+        return None
+    country = None
+    for ident in (e.vendor_org_nr, e.iban):
+        if ident and (m := re.match(r"\s*([A-Za-z]{2})", ident)):
+            country = m.group(1).upper()
+            break
+    if country is None and doc.kb_match:
+        entry = next((v for v in kb.vendors if v.id == doc.kb_match.entry_id), None)
+        country = entry.country.upper() if entry and entry.country else None
+    if country is None:
+        return "unknown"
+    if country == "SE":
+        return None
+    return "eu" if country in EU_COUNTRIES else "non_eu"
+
+
+def propose_voucher(
+    doc: Document, number: int, model: str | None, prompt_version: str | None, kb: KnowledgeBase | None = None
+) -> Voucher:
+    """Voucher for one document. Cost documents book only the deductible share of input VAT to 2640/2645; the rest
+    is part of the cost. A 0 % purchase from abroad under a reverse-charge activity adds D 2645 / C 2614 at 25 %."""
     e = doc.extraction
     if e is None:
         raise ValueError(f"Document {doc.id} has no extraction")
     net, vat, gross = _sek_parts(doc)
+    rc = None
     if e.doc_type == DocType.CUSTOMER_INVOICE:
         entries = [(AR, gross), (SALES, -net), (OUTPUT_VAT, -vat)]
     else:
+        if kb is None:
+            from lovelight import knowledge
+
+            kb = knowledge.load()
+        account = e.suggested_account
+        share = kb.input_vat_deductible(account)
+        reclaim = to_ore(vat * share)
         counter = BANK if e.doc_type == DocType.RECEIPT else AP
-        entries = [(e.suggested_account, net), (INPUT_VAT, vat), (counter, -gross)]
+        entries = [(account, net + vat - reclaim), (INPUT_VAT, reclaim), (counter, -gross)]
+        if rc := reverse_charge_region(doc, kb):
+            rc_vat = to_ore(net * RC_RATE)
+            rc_reclaim = to_ore(rc_vat * share)
+            entries += [(RC_INPUT_VAT, rc_reclaim), (account, rc_vat - rc_reclaim), (RC_OUTPUT_VAT, -rc_vat)]
+    merged: dict[str, Decimal] = defaultdict(lambda: ZERO)
+    for a, x in entries:
+        merged[a] += x
     label = " ".join(p for p in (e.vendor, e.invoice_number) if p)
     v = Voucher(
         id=f"V{number}", number=number, date=e.date, description=f"{e.doc_type.value.replace('_', ' ')}: {label}",
-        lines=_compact(entries), document_id=doc.id, model=model, prompt_version=prompt_version,
+        lines=_compact(list(merged.items())), document_id=doc.id, model=model, prompt_version=prompt_version,
+        reverse_charge=rc,
     )
     validate(v)
     return v
@@ -130,6 +187,7 @@ def reverse(v: Voucher, number: int) -> Voucher:
         id=f"V{number}", number=number, date=v.date, description=f"Reversal of #{v.number}: {v.description}",
         lines=[VoucherLine(account=ln.account, debit=ln.credit, credit=ln.debit) for ln in v.lines],
         document_id=v.document_id, bank_tx_id=v.bank_tx_id, status="posted", reverses_id=v.id,
+        reverse_charge=v.reverse_charge,
     )
     validate(r)
     return r
@@ -164,8 +222,33 @@ def balance_sheet(vouchers: list[Voucher]) -> dict:
 
 
 def vat_return(vouchers: list[Voucher]) -> dict[str, Decimal]:
+    """Swedish VAT return boxes: 05 sales, 10 output VAT, 21/22 reverse-charge purchase base (EU / non-EU),
+    30 self-assessed output VAT, 48 input VAT, 49 VAT to pay (negative = refund)."""
     b = balances(vouchers)
     sales = to_ore(-sum((x for a, x in b.items() if a.startswith("30")), ZERO))
-    output = to_ore(-sum((x for a, x in b.items() if a.startswith("261")), ZERO))
+    output = to_ore(-sum((x for a, x in b.items() if a in ("2610", "2611", "2612", "2613")), ZERO))
+    rc_output = to_ore(-b.get(RC_OUTPUT_VAT, ZERO))
     input_ = to_ore(sum((x for a, x in b.items() if a.startswith("264")), ZERO))
-    return {"05": sales, "10": output, "48": input_, "49": to_ore(output - input_)}
+    base: dict[str, Decimal] = defaultdict(lambda: ZERO)
+    for v in vouchers:
+        if v.status in REPORTED_STATUSES and v.reverse_charge:
+            rc = sum((ln.credit - ln.debit for ln in v.lines if ln.account == RC_OUTPUT_VAT), ZERO)
+            base[v.reverse_charge] += rc / RC_RATE
+    out = {
+        "05": sales, "10": output, "21": to_ore(base["eu"]), "22": to_ore(base["non_eu"]), "30": rc_output,
+        "48": input_, "49": to_ore(output + rc_output - input_),
+    }
+    if base["unknown"]:
+        out["rc_unassigned"] = to_ore(base["unknown"])  # supplier country unknown: box 21 or 22 decided on review
+    return out
+
+
+def validate_all(vouchers: list[Voucher]) -> str | None:
+    """Id of the first reportable voucher that does not balance, else None."""
+    for v in vouchers:
+        if v.status in REPORTED_STATUSES:
+            try:
+                validate(v)
+            except UnbalancedVoucher:
+                return v.id
+    return None

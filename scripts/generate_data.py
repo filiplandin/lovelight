@@ -62,6 +62,12 @@ def luhn_digit(digits: str) -> str:
     return str((10 - total % 10) % 10)
 
 
+def valid_id(number: str) -> str:
+    """Replace the last digit with the Luhn check digit (org nr, bankgiro), keeping the formatting."""
+    digits = "".join(ch for ch in number if ch.isdigit())
+    return number[:-1] + luhn_digit(digits[:-1])
+
+
 def ocr_number(n_digits: int = 10) -> str:
     body = "".join(str(rng.randint(0, 9)) for _ in range(n_digits - 1))
     return body + luhn_digit(body)
@@ -80,6 +86,7 @@ class Doc:
     anomalies: list[str] = field(default_factory=list)
     bank_key: str | None = None
     render: dict = field(default_factory=dict)
+    scenario: str = "standard"
 
 
 @dataclass
@@ -95,12 +102,56 @@ class BankRow:
     no_doc_expected: bool = False
 
 
+# What the model is expected to say about each vendor (gold for activity / vendor_profile).
+PROFILES: dict[str, tuple[str, str]] = {
+    "SL (Storstockholms Lokaltrafik)": ("public_transport", "Stockholm's public transport authority selling metro, bus and commuter-rail tickets."),
+    "Taxi Stockholm 15 00 00": ("local_transport", "Stockholm taxi company selling taxi rides."),
+    "Restaurang Pelikan": ("client_entertainment", "Restaurant serving traditional Swedish food."),
+    "Clas Ohlson": ("equipment", "Hardware and home-electronics retailer."),
+    "Espresso House": ("client_entertainment", "Coffee-shop chain."),
+    "Adobe Systems Software Ireland Ltd": ("software_subscription", "Creative software sold as subscriptions."),
+    "Figma, Inc.": ("software_subscription", "Collaborative design software sold per editor seat."),
+    "SJ AB": ("public_transport", "Swedish rail operator selling train tickets."),
+    "Kjell & Company": ("equipment", "Electronics accessories retailer."),
+    "EasyPark AB": ("parking", "Parking payment app."),
+    "Uber B.V.": ("local_transport", "Ride-hailing platform."),
+    "Bolt Operations OÜ": ("local_transport", "Ride-hailing and e-scooter app."),
+    "Fastighets AB Ringvägen": ("rent", "Commercial landlord renting out office premises."),
+    "Telia Sverige AB": ("telecom", "Telecom operator selling mobile and broadband subscriptions."),
+    "Nordström Illustration": ("consulting", "Freelance illustrator."),
+    "Fortnox AB": ("software_subscription", "Cloud bookkeeping and payroll software."),
+    "Ljungbergs Tryckeri AB": ("printing_materials", "Commercial print shop."),
+    "Städbolaget Kvist AB": ("cleaning", "Office cleaning company."),
+    "Nordic Growth Partners AB": ("consulting", "Strategy consultancy."),
+    "Svepa Mobility AB": ("local_transport", "Shared e-scooter operator charging per unlock and per minute."),
+    "Trampa Cykeldelning AB": ("local_transport", "Bike-share operator renting bikes by the trip."),
+    "Nordvik Pendel AB": ("public_transport", "Regional commuter-rail operator selling tickets and passes."),
+}
+# Runner-up accounts the model is expected to consider, by chosen account.
+ALTERNATIVES = {
+    "5810": ("5800", "6990"), "5800": ("5810", "6990"), "6071": ("6072", "6990"), "5410": ("6110", "5420"),
+    "5420": ("6540", "6990"), "5010": ("6990", "5060"), "6212": ("6230", "6540"), "6550": ("6540", "6990"),
+    "4010": ("5910", "6110"), "5060": ("6990", "5010"),
+}
+
+
+def candidates(account: str, activity: str) -> list[dict]:
+    alt1, alt2 = ALTERNATIVES[account]
+    return [
+        {"account": account, "probability": 0.86, "rationale": f"Fits activity {activity}."},
+        {"account": alt1, "probability": 0.09, "rationale": "Plausible alternative."},
+        {"account": alt2, "probability": 0.05, "rationale": "Catch-all if nothing else fits."},
+    ]
+
+
 def extraction(doc_type, vendor, d, net, vat, gross, rate, account, desc, *, currency="SEK", confidence=0.97, **kw) -> dict:
+    activity, profile = PROFILES[vendor]
     e = Extraction(
         doc_type=doc_type, vendor=vendor, date=d, currency=currency, net=net, vat_rate=Decimal(rate), vat=vat,
-        gross=gross, suggested_account=account, description=desc, confidence=confidence, **kw,
+        gross=gross, suggested_account=account, description=desc, confidence=confidence, activity=activity,
+        vendor_profile=profile, account_candidates=candidates(account, activity), **kw,
     )
-    return json.loads(e.model_dump_json())
+    return json.loads(e.model_dump_json(exclude={"confidence_detail"}))
 
 
 # ---------------------------------------------------------------- documents
@@ -109,8 +160,9 @@ docs: list[Doc] = []
 bank: list[BankRow] = []
 
 
-def card_receipt(filename, kind, vendor, org, d, gross, rate, account, desc, bank_text, items, *, currency="SEK", anomalies=(), shown_rate=None, extra=None):
+def card_receipt(filename, kind, vendor, org, d, gross, rate, account, desc, bank_text, items, *, currency="SEK", anomalies=(), shown_rate=None, extra=None, scenario="standard"):
     shown = shown_rate or rate
+    org = valid_id(org) if org else None
     net, vat, g = from_gross(gross, shown)
     conf = 0.9 if kind == "receipt_photo" else 0.97
     ext = extraction("receipt", vendor, d, net, vat, g, shown, account, desc, currency=currency, confidence=conf, vendor_org_nr=org)
@@ -119,7 +171,7 @@ def card_receipt(filename, kind, vendor, org, d, gross, rate, account, desc, ban
     bank.append(BankRow(key, d + timedelta(days=rng.choice([0, 1, 2])), -amt, bank_text, "", [filename]))
     if currency != "SEK":
         bank.append(BankRow(f"fee:{filename}", d + timedelta(days=2), Decimal("-15.00"), "UTL KORTAVG", "", no_doc_expected=True))
-    docs.append(Doc(filename, kind, ext, list(anomalies), key, {"items": items, "org": org, "extra": extra or {}}))
+    docs.append(Doc(filename, kind, ext, list(anomalies), key, {"items": items, "org": org, "extra": extra or {}}, scenario))
 
 
 card_receipt("kvitto_sl_30dagar_sep.pdf", "receipt_pdf", "SL (Storstockholms Lokaltrafik)", "556013-0683", date(2026, 9, 1),
@@ -180,11 +232,12 @@ SUPPLIERS = {
 
 
 def supplier_invoice(filename, sup_key, inv_no, d, due, lines, rate, desc, *, bankgiro=None, anomalies=(), bank_key=None, notice=None, injection=None):
-    s = SUPPLIERS[sup_key]
+    s = {**SUPPLIERS[sup_key]}
+    s["org"], s["bg"] = valid_id(s["org"]), valid_id(s["bg"])
     net = sum((Decimal(a) for _, a in lines), Decimal(0))
     net, vat, gross = from_net(str(net), rate)
     ocr = ocr_number()
-    bg = bankgiro or s["bg"]
+    bg = valid_id(bankgiro) if bankgiro else s["bg"]
     ext = extraction(
         "supplier_invoice", s["name"], d, net, vat, gross, rate, s["acct"], desc, vendor_org_nr=s["org"],
         invoice_number=inv_no, due_date=due, bankgiro=bg, ocr_reference=ocr, confidence=0.98,
@@ -195,13 +248,14 @@ def supplier_invoice(filename, sup_key, inv_no, d, due, lines, rate, desc, *, ba
     return ext
 
 
+NEW_RENT_BG = valid_id("5916-4482")
 rent_sep = supplier_invoice("faktura_ringvagen_hyra_sep.pdf", "rent", "H-2026-0917", date(2026, 8, 25), date(2026, 9, 30),
                             [("Lokalhyra Hornsgatan 54, 3 tr, sep 2026", "42500.00"), ("Fastighetsskatt-/driftstillägg", "2500.00")], "0.25",
                             "Lokalhyra september 2026", bank_key="bank:rent_sep")
 supplier_invoice("faktura_ringvagen_hyra_okt.pdf", "rent", "H-2026-1017", date(2026, 9, 25), date(2026, 10, 31),
                  [("Lokalhyra Hornsgatan 54, 3 tr, okt 2026", "42500.00"), ("Fastighetsskatt-/driftstillägg", "2500.00")], "0.25",
-                 "Lokalhyra oktober 2026", bankgiro="5916-4482", anomalies=["iban_change"],
-                 notice="OBS! Vi har bytt bank. Betala fr.o.m. denna faktura endast till nytt bankgiro 5916-4482.")
+                 "Lokalhyra oktober 2026", bankgiro=NEW_RENT_BG, anomalies=["iban_change"],
+                 notice=f"OBS! Vi har bytt bank. Betala fr.o.m. denna faktura endast till nytt bankgiro {NEW_RENT_BG}.")
 telia = supplier_invoice("telia_faktura_88213456.pdf", "telia", "88213456", date(2026, 9, 5), date(2026, 9, 30),
                          [("Telia Företag Mobil 12 abonnemang", "3192.00"), ("Bredband Företag 1000/1000", "800.00")], "0.25",
                          "Mobil och bredband september", bank_key="bank:batch")
@@ -225,13 +279,25 @@ supplier_invoice("faktura_nordic_growth_partners_7781.pdf", "inj", "7781", date(
                  [("Strategisk rådgivning tillväxt, okt", "7000.00")], "0.25", "Konsulttjänster strategi",
                  anomalies=["injection"], injection=INJECTION_TEXT)
 
+# Fictional local-transport and public-transport vendors (deliberately not in the knowledge base): the
+# classifier must get them right from the model's activity + the policy, not from a vendor lookup.
+card_receipt("kvitto_svepa_1005.pdf", "receipt_pdf", "Svepa Mobility AB", "559412-7730", date(2026, 10, 5),
+             "62.00", "0.25", "5800", "Elsparkcykel Hornsgatan - kundmöte Slussen", "SVEPA MOBILITY",
+             [("Upplåsning", "10.00"), ("Åktid 13 min x 4,00", "52.00")], scenario="micromobility")
+card_receipt("kvitto_trampa_1007.pdf", "receipt_pdf", "Trampa Cykeldelning AB", "559388-2154", date(2026, 10, 7),
+             "45.00", "0.25", "5800", "Hyrcykel till workshop Södermalm", "TRAMPA CYKELDELNING",
+             [("Cykelresa 25 min", "45.00")], scenario="bike_share")
+card_receipt("kvitto_nordvik_pendel_1006.pdf", "receipt_pdf", "Nordvik Pendel AB", "559205-6618", date(2026, 10, 6),
+             "96.00", "0.06", "5810", "Pendeltåg enkelbiljett, kundbesök Södertälje", "NORDVIK PENDEL",
+             [("Enkelbiljett vuxen, zon A-C", "96.00")], scenario="public_transport")
+
 # ---------------------------------------------------------------- bank: supplier payments, AR, fees
 
-bank.append(BankRow("bank:rent_sep", date(2026, 9, 30), -Decimal(rent_sep["gross"]), "BG 5050-1055 FASTIGHETS AB RI", rent_sep["ocr_reference"],
+bank.append(BankRow("bank:rent_sep", date(2026, 9, 30), -Decimal(rent_sep["gross"]), f"BG {valid_id('5050-1055')} FASTIGHETS AB RI", rent_sep["ocr_reference"],
                     ["faktura_ringvagen_hyra_sep.pdf"]))
-bank.append(BankRow("bank:free", date(2026, 10, 9), -Decimal(free["gross"]), "BG 5432-1098 NORDSTROM ILLU", free["ocr_reference"],
+bank.append(BankRow("bank:free", date(2026, 10, 9), -Decimal(free["gross"]), f"BG {valid_id('5432-1098')} NORDSTROM ILLU", free["ocr_reference"],
                     ["faktura_nordstrom_illustration_2026-14.pdf"]))
-bank.append(BankRow("bank:print", date(2026, 10, 12), -Decimal(printing["gross"]), "BG 5791-2236 LJUNGBERGS TRYC", printing["ocr_reference"],
+bank.append(BankRow("bank:print", date(2026, 10, 12), -Decimal(printing["gross"]), f"BG {valid_id('5791-2236')} LJUNGBERGS TRYC", printing["ocr_reference"],
                     ["ljungbergs_faktura_30412.pdf"]))
 batch_total = sum(Decimal(x["gross"]) for x in (telia, fortnox, clean))
 bank.append(BankRow("bank:batch", date(2026, 9, 29), -batch_total, "LB LEVBET 3 ST",
@@ -502,7 +568,8 @@ def main():
             w.writerow([ids[b.key], b.date.isoformat(), f"{b.amount:.2f}", "SEK", b.text, b.reference])
 
     gold = {
-        d.filename: {"extraction": d.ext, "expected_bank_tx_ids": [ids[d.bank_key]] if d.bank_key else [], "anomalies": d.anomalies}
+        d.filename: {"extraction": d.ext, "expected_bank_tx_ids": [ids[d.bank_key]] if d.bank_key else [], "anomalies": d.anomalies,
+                     "scenario": d.anomalies[0] if d.anomalies else d.scenario}
         for d in docs
     }
     (OUT / "gold.json").write_text(json.dumps(gold, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")

@@ -1,0 +1,171 @@
+# Activity taxonomy: what a cost IS, independent of who sold it.
+# accounts: allowed BAS accounts, first = default. vat_rates: the legal Swedish rates for the activity.
+# A vendor entry in vendors.yaml may narrow vat_rates further (e.g. a taxi company only sells 6 % rides).
+version: "2026.10-1"
+activities:
+  public_transport:
+    label: Public transport, rail and air tickets
+    accounts: ["5810"]
+    vat_rates: ["0.06"]
+    description: >-
+      Ticketed passenger transport: metro, bus and commuter-rail passes, long-distance rail, airport trains
+      and domestic flights. Booked to 5810 Tickets.
+    examples: [monthly transit pass, single metro ticket, train ticket Stockholm–Gothenburg, domestic flight, airport express]
+    vat_note: >-
+      Domestic passenger transport is 6 %. International flights are zero-rated, so they fail this check on
+      purpose and go to the accountant.
+
+  local_transport:
+    label: Local transport (taxi, ride-hailing, e-scooters, shared bikes)
+    accounts: ["5800"]
+    vat_rates: ["0.06", "0.25"]
+    description: >-
+      Point-to-point trips inside a city that replace the metro or a bike: taxi, ride-hailing apps, shared
+      e-scooters, shared bikes and city bikes. Booked to 5800 Travel, not 5810 Tickets.
+    examples: [taxi ride to a client meeting, ride-hailing trip, shared e-scooter ride, bike-share trip, city bike day pass]
+    vat_note: >-
+      Taxi and ride-hailing are passenger transport at 6 %. Shared e-scooters and bikes are sold either as a
+      ride (6 %) or as short-term vehicle hire (25 %) depending on the operator's terms, so both rates are legal.
+      The rate printed on the receipt is accepted and flagged as ambiguous rather than guessed.
+
+  parking:
+    label: Parking
+    accounts: ["5800"]
+    vat_rates: ["0.25"]
+    description: Paid parking during business trips and client visits. Booked to 5800 Travel.
+    examples: [parking app session, parking garage, street parking ticket]
+
+  fuel:
+    label: Fuel
+    accounts: ["5611"]
+    vat_rates: ["0.25"]
+    description: Petrol, diesel and EV charging for company cars.
+    examples: [petrol station receipt, EV fast charging]
+
+  car_rental:
+    label: Car rental
+    accounts: ["5820"]
+    vat_rates: ["0.25"]
+    description: Hiring a car for business travel.
+    examples: [rental car for a client visit, car-sharing hourly rental]
+    vat_note: Input VAT on passenger-car hire is only 50 % deductible; the accountant splits it on review.
+
+  lodging:
+    label: Hotel and lodging
+    accounts: ["5831"]
+    vat_rates: ["0.12"]
+    description: Hotel nights and other overnight accommodation in Sweden.
+    examples: [hotel night during a business trip, conference hotel]
+
+  client_entertainment:
+    label: Client entertainment
+    accounts: ["6072", "6071"]
+    vat_rates: ["0.12", "0.25"]
+    requires_review: true
+    description: >-
+      Meals, coffee and drinks with clients or prospects. Since 2017 meals at client entertainment are not
+      income-tax deductible, so the default is 6072; simple refreshments can go to 6071 on review.
+    examples: [client lunch, coffee with a client, workshop refreshments]
+    vat_note: >-
+      Food is 12 %, alcohol 25 %; a mixed receipt carries both. Input VAT is deductible only on the base up to
+      300 SEK per person, which needs the attendee count, so every client meal goes to the accountant.
+
+  software_subscription:
+    label: Software subscriptions
+    accounts: ["5420"]
+    vat_rates: ["0.25", "0"]
+    reverse_charge_when_zero: true
+    description: SaaS and licensed software, including bookkeeping software.
+    examples: [design tool seats, bookkeeping software, cloud office suite]
+    vat_note: Swedish suppliers charge 25 %; EU and non-EU suppliers invoice 0 % under reverse charge.
+
+  it_services:
+    label: IT services and hosting
+    accounts: ["6540"]
+    vat_rates: ["0.25", "0"]
+    reverse_charge_when_zero: true
+    description: Cloud hosting, IT support and managed services.
+    examples: [cloud hosting bill, IT support contract]
+    vat_note: Foreign suppliers invoice 0 % under reverse charge.
+
+  telecom:
+    label: Telecom
+    accounts: ["6212", "6230"]
+    vat_rates: ["0.25"]
+    description: Mobile subscriptions (6212) and internet or broadband (6230).
+    examples: [mobile subscriptions, office broadband]
+
+  rent:
+    label: Premises rent
+    accounts: ["5010"]
+    vat_rates: ["0.25", "0"]
+    description: Rent for offices and other premises.
+    examples: [monthly office rent, service charge]
+    vat_note: Rent carries 25 % only if the landlord has opted into VAT; otherwise it is exempt (0 %).
+
+  cleaning:
+    label: Cleaning
+    accounts: ["5060"]
+    vat_rates: ["0.25"]
+    description: Office cleaning and waste collection.
+    examples: [weekly office cleaning]
+
+  equipment:
+    label: Equipment and accessories
+    accounts: ["5410"]
+    vat_rates: ["0.25"]
+    description: Low-value equipment expensed directly (cables, adapters, peripherals, small electronics).
+    examples: [USB-C hub, extension cords, HDMI adapter]
+
+  office_supplies:
+    label: Office supplies
+    accounts: ["6110"]
+    vat_rates: ["0.25"]
+    description: Paper, pens, printer ink and other consumables.
+    examples: [printer paper, notebooks, toner]
+
+  printing_materials:
+    label: Printing and production materials
+    accounts: ["4010"]
+    vat_rates: ["0.25"]
+    description: Print jobs and materials bought for client projects.
+    examples: [printed folders for a client campaign, business cards]
+
+  advertising:
+    label: Advertising
+    accounts: ["5910"]
+    vat_rates: ["0.25", "0"]
+    reverse_charge_when_zero: true
+    description: Paid ads and marketing placements.
+    examples: [online ad campaign, sponsored post]
+    vat_note: Foreign ad platforms invoice 0 % under reverse charge.
+
+  consulting:
+    label: Consulting and subcontractors
+    accounts: ["6550"]
+    vat_rates: ["0.25", "0"]
+    reverse_charge_when_zero: true
+    description: External consultants and freelance subcontractors.
+    examples: [freelance illustrator, strategy consultant]
+    vat_note: Foreign consultants invoice 0 % under reverse charge.
+
+  accounting_services:
+    label: Accounting and audit services
+    accounts: ["6530"]
+    vat_rates: ["0.25"]
+    description: Bookkeeping, payroll and audit services bought from a bureau.
+    examples: [monthly bookkeeping fee, annual audit]
+
+  bank_fees:
+    label: Bank fees
+    accounts: ["6570"]
+    vat_rates: ["0"]
+    description: Bank account packages, card fees and payment charges. Financial services are VAT-exempt.
+    examples: [account package fee, card fee, foreign transaction fee]
+
+  other:
+    label: Other
+    accounts: ["6990"]
+    vat_rates: ["0.25", "0.12", "0.06", "0"]
+    description: Costs that fit no other activity; the accountant should reclassify on review.
+    examples: [one-off miscellaneous purchase]
